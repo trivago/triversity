@@ -1,9 +1,38 @@
 <html>
     <head>
         <title>triversity</title>
+        <script src="airtable.browser.js"></script>
     </head>
-
     <body>
-       <!-- JavaScript here --> 
+
     </body>
+    <!-- JavaScript here -->
+    <script type="text/javaScript">
+
+        /* Authentication */
+        var Airtable = require('airtable');
+        var base = new Airtable({apiKey: 'keyVzJe5qGOll341v'}).base('appkmRgOBmQGWlfoc');
+
+
+        base('Thesis').select({
+            // Selecting the first 3 records in Grid view:
+            maxRecords: 3,
+            view: "Grid view"
+        }).eachPage(function page(records, fetchNextPage) {
+            // This function (`page`) will get called for each page of records.
+
+            records.forEach(function(record) {
+                console.log('Retrieved', record.get('Type'));
+            });
+
+            // To fetch the next page of records, call `fetchNextPage`.
+            // If there are more records, `page` will get called again.
+            // If there are no more records, `done` will get called.
+            fetchNextPage();
+
+        }, function done(err) {
+            if (err) { console.error(err); return; }
+        });
+
+    </script>
 </html>
