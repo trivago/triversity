@@ -1,45 +1,100 @@
 <template>
-  <div class="card-expansion">
-    <md-card v-for="record in records" :key="record.id">
-      <md-card-expand>
-        <md-card-header>
-          <md-card-header-text>
-            <div class="md-title">{{ record.fields['Name'] }}</div>
-          </md-card-header-text>
-          <div class="project__university-info">
-            {{ record.fields['University'] }}
-          </div>
-          <div>
-            <md-card-expand-trigger>
-              <md-button class="md-icon-button">
-                <md-icon>keyboard_arrow_down</md-icon>
-              </md-button>
-            </md-card-expand-trigger>
-          </div>
-        </md-card-header>
-      </md-card-expand>
-      <md-card-expand-content>
-        <md-card-content>
-          <div>
-            Project description:<br>
-            {{ record.fields['Project Description'] }}
-          </div>
-          <div class="project__attachment" v-show="record.fields['Attachment']" v-for="file in record.fields['Attachment']" :key="file.id">
-            <md-button class="md-icon-button" :href="file.url" v-if="file.type === 'application/pdf'">
-              <md-icon>picture_as_pdf</md-icon>
-            </md-button>
-          </div>
-        </md-card-content>
-      </md-card-expand-content>
-    </md-card>
+  <div>
+    <div class="filter-container">
+    </div>
+    <div class="list-container">
+      <md-list :md-expand-single="expandSingle">
+        <md-list-item class="list--header">
+          <span class="md-list-item-text md-title">Projects</span>
+        </md-list-item>
+        <div v-for="record in records" :key="record.id">
+          <md-list-item md-expand :md-expanded.sync="record._showDetails">
+            <span class="md-list-item-text">{{ record.fields['Name'] }}</span>
+            <div slot="md-expand" class="project__details flex-direction--column">
+              <div class="flex-direction--row">
+                <div>
+                  <md-card>
+                    <span class="project__details__title">Project Description:</span>
+                    <p class="project__details__content">{{ record.fields['Project Description'] }}</p>
+                  </md-card>
+                </div>
+                <div class="flex-direction--column">
+                    <md-card>
+                      <span class="project__details__title">University:</span>
+                      <p class="project__details__content" v-if="record.fields['University']">{{ record.fields['University'] }}</p>
+                      <p class="project__details__content" v-else>open</p>
+                    </md-card>
+                    <md-card>
+                      <span class="project__details__title">Mentor:</span>
+                      <p class="project__details__content" v-if="record.fields['Mentor']">{{ record.fields['Mentor'] }}</p>
+                      <p class="project__details__content" v-else>open</p>
+                    </md-card>
+                  </div>
+                <div class="flex-direction--column" v-show="record.fields['Attachment']">
+                    <md-card>
+                      <span class="project__details__title">Attachment:</span>
+                      <div class="project__details__content"
+                           v-for="file in record.fields['Attachment']" :key="file.id">
+                        <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
+                          <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
+                        </md-button>
+                      </div>
+                    </md-card>
+                  </div>
+              </div>
+              <div class="button-group">
+                <b-button variant="link" class="text-decoration-none"><md-icon>delete</md-icon></b-button>
+                <b-button variant="link" class="text-decoration-none"><md-icon>edit</md-icon></b-button>
+              </div>
+            </div>
+          </md-list-item>
+        </div>
+      </md-list>
+    </div>
+<!--  <div class="card-expansion">-->
+<!--    <md-card v-for="record in records" :key="record.id">-->
+<!--      <md-card-expand>-->
+<!--        <md-card-header>-->
+<!--          <md-card-header-text>-->
+<!--            <div class="md-title">{{ record.fields['Name'] }}</div>-->
+<!--          </md-card-header-text>-->
+<!--          <div class="project__university-info">-->
+<!--            {{ record.fields['University'] }}-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <md-card-expand-trigger>-->
+<!--              <md-button class="md-icon-button">-->
+<!--                <md-icon>keyboard_arrow_down</md-icon>-->
+<!--              </md-button>-->
+<!--            </md-card-expand-trigger>-->
+<!--          </div>-->
+<!--        </md-card-header>-->
+<!--      </md-card-expand>-->
+<!--      <md-card-expand-content>-->
+<!--        <md-card-content>-->
+<!--          <div>-->
+<!--            Project description:<br>-->
+<!--            {{ record.fields['Project Description'] }}-->
+<!--          </div>-->
+<!--          <div class="project__attachment" v-show="record.fields['Attachment']" v-for="file in record.fields['Attachment']" :key="file.id">-->
+<!--            <md-button class="md-icon-button" :href="file.url" v-if="file.type === 'application/pdf'">-->
+<!--              <md-icon>picture_as_pdf</md-icon>-->
+<!--            </md-button>-->
+<!--          </div>-->
+<!--        </md-card-content>-->
+<!--      </md-card-expand-content>-->
+<!--    </md-card>-->
+<!--  </div>-->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import ListItemDetail from './ListItemDetail'
 
 export default {
   name: 'ProjectListView',
+  components: {ListItemDetail},
   props: [
     'base'
   ],
@@ -47,7 +102,19 @@ export default {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
       apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
-      records: []
+      records: [],
+      fields: {
+        'fields.Name': {
+          label: 'Project',
+          sortable: true
+        },
+        'fields.University': {
+          label: 'University',
+          sortable: true
+        }
+      },
+      expandProject: false,
+      expandSingle: true
     }
   },
   mounted: function () {
@@ -62,6 +129,11 @@ export default {
     }
   },
   methods: {
+    resetRowDetailsVisibility: function (records) {
+      records.forEach((record) => {
+        record['_showDetails'] = false
+      })
+    },
     getData: function () {
       axios({
         url: this.apiUrl + this.base + '/Project',
@@ -70,6 +142,7 @@ export default {
         }
       }).then((res) => {
         this.records = res.data.records
+        this.resetRowDetailsVisibility(this.records)
         console.log(this.records)
       })
     }
@@ -90,30 +163,93 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .card-expansion {
+  .filter-container {
+    box-sizing: border-box;
+    width: 100%;
     height: fit-content;
+    min-height: 55px;
+    background-color: #EBECED;
+    padding-top: .5em;
+    padding-left: 10%;
+    padding-right: 10%;
   }
-  .md-card {
-    width: 80%;
-    margin: 4px;
+
+  .list-container {
+    box-sizing: border-box;
+    width: 100%;
+    height: fit-content;
+    padding: 3em 10%;
+  }
+  .list-container > .md-list {
+    box-sizing: border-box;
+    max-width: 100%;
     display: inline-block;
     vertical-align: top;
+    border: 1px solid #00000012;
+    background-color: white;
   }
-  .md-card-header {
-    height: inherit;
-    line-height: inherit;
-    vertical-align: bottom;
+  .list--header {
+    border-bottom: 1px solid #EBECED;
   }
-  .md-card-header-text,
-  .md-card-content{
-    text-align: start;
-  }
-  .project__university-info {
+  .project__details {
+    box-sizing: border-box;
+    width: inherit;
     height: fit-content;
-    vertical-align: bottom;
+    padding: .8em;
+    justify-content: space-between;
+    background-color: #EBECED;
+  }
+  .flex-direction--row {
+    display: flex;
+    flex-direction: row;
+  }
+  .flex-direction--column {
+    display: flex;
+    flex-direction: column;
+  }
+  .flex-direction--row > div:nth-child(1) {
+    flex: 2;
+  }
+  .flex-direction--row > div,
+  .flex-direction--column > .md-card {
+    flex: 1;
+  }
+  .md-card {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+    background-color: white;
+    border: 1px solid #00000022;
+    padding: .3rem .5rem;
+  }
+  .project__details__title {
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: .8rem;
+    color: #5d5d5d;
+    white-space: normal;
+  }
+  .project__details__content {
+    box-sizing: border-box;
+    font-size: .85rem;
+    font-weight: 500;
+    color: #212121;
+    white-space: normal;
+    padding: .2rem 0;
+  }
+  .button-group {
+    width: 100%;
+    background-color: white;
+    border: 1px solid #E1E1E1;
+  }
+  .button-group > button {
+    display: inline;
+    float: right;
+    color: #616161;
   }
   a, a:visited, a:focus, a:hover {
-    color: #212121;
+    color: #616161;
     text-decoration: none;
   }
 </style>

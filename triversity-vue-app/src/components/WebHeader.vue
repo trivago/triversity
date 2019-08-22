@@ -1,5 +1,5 @@
 <template>
-  <div class="header--view">
+  <div class="header-container">
     <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span>
   </div>
 </template>
@@ -11,13 +11,15 @@ export default {
 </script>
 
 <style scoped>
-  .header--view {
-    margin-bottom: 60px;
+  .header-container {
+    box-sizing: border-box;
+    background-color: white;
+    padding: .5em;
   }
   span {
     margin: 0;
     padding: 0;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
   }
   #title--blue {
