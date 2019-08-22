@@ -7,6 +7,7 @@
 
 <script>
 import WebHeader from './components/WebHeader'
+
 export default {
   name: 'App',
   components: {
