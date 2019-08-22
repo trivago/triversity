@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div class="filter-container">
+    <div class="horizontal--layout">
+      <SearchBar id="searchBar"></SearchBar>
+      <CreateButton id="createBtn"></CreateButton>
     </div>
     <div class="list-container">
       <md-list :md-expand-single="expandSingle">
@@ -51,53 +53,23 @@
         </div>
       </md-list>
     </div>
-<!--  <div class="card-expansion">-->
-<!--    <md-card v-for="record in records" :key="record.id">-->
-<!--      <md-card-expand>-->
-<!--        <md-card-header>-->
-<!--          <md-card-header-text>-->
-<!--            <div class="md-title">{{ record.fields['Name'] }}</div>-->
-<!--          </md-card-header-text>-->
-<!--          <div class="project__university-info">-->
-<!--            {{ record.fields['University'] }}-->
-<!--          </div>-->
-<!--          <div>-->
-<!--            <md-card-expand-trigger>-->
-<!--              <md-button class="md-icon-button">-->
-<!--                <md-icon>keyboard_arrow_down</md-icon>-->
-<!--              </md-button>-->
-<!--            </md-card-expand-trigger>-->
-<!--          </div>-->
-<!--        </md-card-header>-->
-<!--      </md-card-expand>-->
-<!--      <md-card-expand-content>-->
-<!--        <md-card-content>-->
-<!--          <div>-->
-<!--            Project description:<br>-->
-<!--            {{ record.fields['Project Description'] }}-->
-<!--          </div>-->
-<!--          <div class="project__attachment" v-show="record.fields['Attachment']" v-for="file in record.fields['Attachment']" :key="file.id">-->
-<!--            <md-button class="md-icon-button" :href="file.url" v-if="file.type === 'application/pdf'">-->
-<!--              <md-icon>picture_as_pdf</md-icon>-->
-<!--            </md-button>-->
-<!--          </div>-->
-<!--        </md-card-content>-->
-<!--      </md-card-expand-content>-->
-<!--    </md-card>-->
-<!--  </div>-->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import ListItemDetail from './ListItemDetail'
+import CreateButton from './CreateButton'
+import SearchBar from './SearchBar'
 
 export default {
   name: 'ProjectListView',
-  components: {ListItemDetail},
   props: [
     'base'
   ],
+  components: {
+    SearchBar,
+    CreateButton
+  },
   data: function () {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
@@ -251,5 +223,20 @@ export default {
   a, a:visited, a:focus, a:hover {
     color: #616161;
     text-decoration: none;
+  }
+  .horizontal--layout {
+    display: flex;
+    width: 80%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1%;
+    justify-content: space-between;
+  }
+  #searchBar {
+    margin-right: 3%;
+    /*width: 90%;*/
+  }
+  #createBtn {
   }
 </style>
