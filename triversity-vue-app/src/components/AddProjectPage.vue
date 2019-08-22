@@ -1,6 +1,7 @@
 /* eslint-disable *
 <template>
-  <div>
+  <div class="create-form--container">
+    <span>Create a Project</span>
     <b-form @submit="onSubmit" v-if="show" class="project-form">
       <b-form-group id="input-group-project-title" label="Project Title:" label-for="input-project-title">
         <b-form-input
@@ -121,8 +122,29 @@ export default {
 </script>
 
 <style>
+  .create-form--container {
+    box-sizing: border-box;
+    width: fit-content;
+    min-width: 80%;
+    background-color: white;
+    height: fit-content;
+    margin: 2em 10% 3em 10%;
+    padding: 2em;
+    border-radius: 20px;
+  }
+  .create-form--container > span:first-child {
+    box-sizing: border-box;
+    width: 100%;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #696969;
+    float: left;
+    padding: 2rem 0;
+    text-align: left;
+  }
   .project-form {
-    width: 80%;
+    box-sizing: border-box;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     text-align: left;

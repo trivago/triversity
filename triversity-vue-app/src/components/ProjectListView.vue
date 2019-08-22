@@ -1,8 +1,13 @@
 <template>
   <div>
-    <div class="horizontal--layout">
-      <SearchBar id="searchBar"></SearchBar>
-      <CreateButton id="createBtn"></CreateButton>
+    <div class="search-bar--container">
+      <div class="horizontal--layout">
+        <SearchBar id="searchBar"></SearchBar>
+        <CreateButton id="createBtn"></CreateButton>
+      </div>
+    </div>
+    <div class="filter-container">
+      filters will come here
     </div>
     <div class="list-container">
       <md-list :md-expand-single="expandSingle">
@@ -135,22 +140,41 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .filter-container {
+  .search-bar--container {
     box-sizing: border-box;
     width: 100%;
     height: fit-content;
-    min-height: 55px;
     background-color: #EBECED;
     padding-top: .5em;
     padding-left: 10%;
     padding-right: 10%;
   }
-
+  .horizontal--layout {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1%;
+    justify-content: space-between;
+  }
+  #searchBar {
+    width: 30%;
+    margin-right: 3%;
+  }
+  .filter-container {
+    width: 100%;
+    height: 50px;
+    margin-top: 2em;
+    line-height: 50px;
+    vertical-align: bottom;
+  }
   .list-container {
     box-sizing: border-box;
     width: 100%;
     height: fit-content;
-    padding: 3em 10%;
+    padding: 2em 10% 3em 10%;
   }
   .list-container > .md-list {
     box-sizing: border-box;
@@ -223,20 +247,5 @@ export default {
   a, a:visited, a:focus, a:hover {
     color: #616161;
     text-decoration: none;
-  }
-  .horizontal--layout {
-    display: flex;
-    width: 80%;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1%;
-    justify-content: space-between;
-  }
-  #searchBar {
-    margin-right: 3%;
-    /*width: 90%;*/
-  }
-  #createBtn {
   }
 </style>

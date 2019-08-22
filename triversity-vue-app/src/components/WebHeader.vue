@@ -1,6 +1,6 @@
 <template>
   <div class="header-container">
-    <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span>
+    <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span><br>
   </div>
 </template>
 
@@ -14,7 +14,8 @@ export default {
   .header-container {
     box-sizing: border-box;
     background-color: white;
-    padding: .5em;
+    padding: 2em;
+    height: auto;
   }
   span {
     margin: 0;

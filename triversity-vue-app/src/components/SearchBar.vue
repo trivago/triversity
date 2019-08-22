@@ -6,7 +6,7 @@
       placeholder="Type to Search"
     ></b-form-input>
     <b-input-group-append>
-      <b-button @click="clear">Clear</b-button>
+      <b-button @click="searchRecord">Search</b-button>
     </b-input-group-append>
   </b-input-group>
 </template>
@@ -15,8 +15,8 @@
 export default {
   name: 'SearchBar',
   methods: {
-    clear () {
-      console.log('Click Clear')
+    searchRecord () {
+      console.log('Click search button')
     }
   }
 }
