@@ -12,12 +12,13 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-university" label="University :" label-for="input-university">
-        <b-form-input
+      <b-form-group id="input-group-university" label="University:" label-for="input-university">
+        <b-form-select
           id="input-university"
           v-model="form.university"
-          placeholder="Enter University Name"
-        ></b-form-input>
+          :options="universities"
+          required
+        ></b-form-select>
       </b-form-group>
 
       <b-form-group id="input-group-mentor" label="Mentor Name:" label-for="input-mentor">
@@ -77,17 +78,35 @@ export default {
       apiKey: 'keyVzJe5qGOll341v',
       form: {
         projectTitle: '',
-        university: '',
+        university: null,
         mentor: '',
         employeeNumber: '',
         targetGroup: null,
         projectDescription: ''
       },
+      universities: [{ text: 'Select University', value: null }],
       targetGroups: [{ text: 'Select One', value: null }, 'Tech', 'Marketing', 'Engineering', 'Finance'],
       show: true
     }
   },
+  mounted: function () {
+    this.getUniversityData()
+  },
   methods: {
+    getUniversityData () {
+      axios({
+        url: this.apiUrl + this.base + '/University',
+        headers: {
+          'Authorization': 'Bearer keyVzJe5qGOll341v'
+        }
+      }).then((response) => {
+        for (var i = 0; i < response.data.records.length; i++) {
+          this.universities.push(response.data.records[i].fields.Name)
+        }
+      }).catch(e => {
+        console.log('Error: ' + e)
+      })
+    },
     onSubmit (evt) {
       evt.preventDefault()
 
@@ -109,13 +128,13 @@ export default {
                           '"}' +
               '}'
       }).then(response => {
-        alert('Project added to the list')
-        this.$router.go(-1)
+        if (response.status === 200) {
+          alert('Project added to the list')
+          this.$router.go(-1)
+        }
+      }).catch(e => {
+        console.log('Error: ' + e)
       })
-        .catch(e => {
-          alert('Error: ' + e)
-          console.log('Error: ' + e)
-        })
     }
   }
 }
