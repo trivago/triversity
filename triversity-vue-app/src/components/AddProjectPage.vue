@@ -91,7 +91,6 @@ export default {
     onSubmit (evt) {
       evt.preventDefault()
 
-      // console.log('{"fields":' + JSON.stringify(this.form, changeKey)+'}')
       axios({
         method: 'post',
         url: this.apiUrl + this.base + '/Project',
@@ -114,6 +113,7 @@ export default {
         this.$router.go(-1)
       })
         .catch(e => {
+          alert('Error: ' + e)
           console.log('Error: ' + e)
         })
     }
