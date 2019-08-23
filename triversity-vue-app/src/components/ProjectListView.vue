@@ -124,7 +124,7 @@ export default {
       })
     },
     onDelete: function (id) {
-      if(confirm("Do you really want to delete?")){
+      if (confirm('Do you really want to delete?')) {
         axios({
           method: 'delete',
           url: this.apiUrl + this.base + '/Project/' + id,
@@ -141,16 +141,6 @@ export default {
         })
       }
     }
-    // getData: function () {
-    //   axios({
-    //     url: 'https://api.airtable.com/v0/appkmRgOBmQGWlfoc/University/recB3brMaACVDXbcL',
-    //     headers: {
-    //       'Authorization': 'Bearer ' + this.apiKey
-    //     }
-    //   }).then((res) => {
-    //     console.log(res.data.fields.Name)
-    //   })
-    // }
   }
 }
 
