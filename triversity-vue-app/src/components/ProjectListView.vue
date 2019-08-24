@@ -97,7 +97,7 @@
                   </div>
               </div>
               <div class="button-group">
-                <b-button variant="link" class="text-decoration-none"><md-icon>delete</md-icon></b-button>
+                <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
                 <b-button variant="link" class="text-decoration-none"><md-icon>edit</md-icon></b-button>
               </div>
             </div>
@@ -193,6 +193,24 @@ export default {
     filterStatus: function () {
       // call
       // using tags
+    },
+    onDelete: function (id) {
+      if (confirm('Do you really want to delete?')) {
+        axios({
+          method: 'delete',
+          url: this.apiUrl + this.base + '/Project/' + id,
+          headers: {
+            'Authorization': 'Bearer ' + this.apiKey
+          }
+        }).then((res) => {
+          console.log('Removing Data : ' + id)
+          alert('Successfully Delete!')
+          this.getData()
+        }).catch(e => {
+          alert('Error: ' + e)
+          console.log('Error: ' + e)
+        })
+      }
     }
   }
 }
