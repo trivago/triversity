@@ -26,6 +26,7 @@
     </DBN-SQL>
     <JSCodeStyleSettings version="0">
       <option name="USE_SEMICOLON_AFTER_STATEMENT" value="false" />
+      <option name="USE_DOUBLE_QUOTES" value="false" />
     </JSCodeStyleSettings>
     <DBN-PSQL>
       <case-options enabled="true">
