@@ -3,7 +3,8 @@
     <b-form-input
       type="search"
       id="filterInput"
-      placeholder="Type to Search"
+      v-model="searchInputText"
+      placeholder="Type to search"
     ></b-form-input>
     <b-input-group-append>
       <b-button @click="searchRecord">Search</b-button>
@@ -14,9 +15,18 @@
 <script>
 export default {
   name: 'SearchBar',
+  data () {
+    return {
+      searchInputText: ''
+    }
+  },
   methods: {
     searchRecord () {
-      console.log('Click search button')
+      this.sendMessageToParent(this.searchInputText)
+    },
+    sendMessageToParent (arg) {
+      var messageTitle = 'messageFrom' + this.$options.name
+      this.$emit(messageTitle, this.$options.name, arg)
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="divdiv" class="divclass">
+  <div class="create__button">
     <b-button @click="$router.push('AddProjectPage')">Create</b-button>
   </div>
 </template>
@@ -16,30 +16,7 @@ export default {
 </script>
 
 <style scoped>
-  .divclass {
+  .create__button {
     align-self: flex-start;
   }
-/*div {*/
-
-/*}*/
-
-/*#divdiv {*/
-
-/*  }*/
-
-/*.divclass {*/
-
-/*}*/
-
-/*  .divclass>b-button {*/
-
-/*  }*/
-
-/*  a,*/
-/*  a:hover,*/
-/*  a:visited,*/
-/*  a:focus {*/
-/*    color: #000;*/
-/*    text-decoration: none;*/
-/*  }*/
 </style>
