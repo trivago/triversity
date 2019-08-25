@@ -2,13 +2,16 @@
   <div>
     <div class="search-bar--container">
       <div class="horizontal--layout">
-        <SearchBar id="searchBar">
-        </SearchBar>
+
+        <SearchBar @messageFromSearchBar="childMessageReceived" id="searchBar"></SearchBar>
         <CreateButton id="createBtn"></CreateButton>
       </div>
     </div>
     <div class="filter-container">
-      filters will come here
+      <b-card bg-variant="light">
+        <div>
+        </div>
+      </b-card>
     </div>
     <div class="list-container">
       <md-list :md-expand-single="expandSingle">
@@ -63,7 +66,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import VueAirtableService from './airtable-api/VueAirtableService'
 import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
 
@@ -82,18 +85,13 @@ export default {
       apiKey: process.env.AIRTABLE_API_KEY,
       // apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
-      fields: {
-        'fields.Name': {
-          label: 'Project',
-          sortable: true
-        },
-        'fields.University': {
-          label: 'University',
-          sortable: true
-        }
-      },
       expandProject: false,
-      expandSingle: true
+      expandSingle: true,
+      // variables for filter
+      filters: [],
+      filterQueries: [],
+      filterTargetGroupOptions: [],
+      sort: ''
     }
   },
   mounted: function () {
@@ -101,6 +99,7 @@ export default {
       return console.error('Please specify `base` and `columns` attributes for <vue-airtable> component.')
     }
     this.getData()
+    this.getTargetGroup()
   },
   watch: {
     table: function (newTable, oldTable) {
@@ -108,38 +107,51 @@ export default {
     }
   },
   methods: {
-    resetRowDetailsVisibility: function (records) {
-      records.forEach((record) => {
-        record['_showDetails'] = false
+    async getData () {
+      var joinQueryForAllFilters = ''
+      if (this.filters.length > 0) {
+        joinQueryForAllFilters = 'OR(' + this.filterQueries.join() + ')'
+      }
+      var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
+      this.records = response.data.records
+    },
+    childMessageReceived: function (componentName, arg) {
+      switch (componentName) {
+        case 'SearchBar':
+          this.searchAllRecordsWithInput(arg)
+          break
+      }
+    },
+    async searchAllRecordsWithInput (searchText) {
+      var query = 'OR(' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Name})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Target Group})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Mentor})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
+        ')'
+      var response = await VueAirtableService.getRecords('Project', query)
+      this.records = response.data.records
+    },
+    async getTargetGroup () {
+      var response = await VueAirtableService.getRecords('TargetGroup')
+      response.data.records.forEach((record) => {
+        this.filterTargetGroupOptions.push(record.fields['Name'])
       })
     },
-    getData: function () {
-      axios({
-        url: this.apiUrl + this.base + '/Project',
-        headers: {
-          'Authorization': 'Bearer ' + this.apiKey
-        }
-      }).then((res) => {
-        this.records = res.data.records
-        this.resetRowDetailsVisibility(this.records)
-        console.log(this.records)
-      })
+    addFilter: function (value) {
+      this.filters.push(value)
+      var query = 'FIND(\'' + value + '\', {Target Group})'
+      this.filterQueries.push(query)
     },
     onDelete: function (id) {
       if (confirm('Do you really want to delete?')) {
-        axios({
-          method: 'delete',
-          url: this.apiUrl + this.base + '/Project/' + id,
-          headers: {
-            'Authorization': 'Bearer ' + this.apiKey
-          }
-        }).then((res) => {
-          console.log('Removing Data : ' + id)
-          alert('Successfully Delete!')
+        VueAirtableService.deleteRecord('Project', id).then((res) => {
+          alert('The record is deleted.')
           this.getData()
-        }).catch(e => {
-          alert('Error: ' + e)
-          console.log('Error: ' + e)
+        }).catch(error => {
+          alert('Error: ' + error)
+          console.log('Error in onDelete: ' + error)
         })
       }
     }
@@ -164,27 +176,42 @@ export default {
     display: flex;
     width: 100%;
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 1%;
     justify-content: space-between;
   }
+  .input-group {
+    width: 50% !important;
+  }
   #searchBar {
-    width: 30%;
+    width: 50%;
     margin-right: 3%;
   }
+  /** Filter CSS **/
   .filter-container {
+    box-sizing: border-box;
+    background-color: #EBECED;
     width: 100%;
-    height: 50px;
-    margin-top: 2em;
+    height: fit-content;
     line-height: 50px;
     vertical-align: bottom;
+    padding: .5em 10%;
   }
+  .form-group {
+    padding: 0;
+    margin: 0;
+    text-align: start;
+  }
+  .filter-label {
+    padding: .2rem;
+    line-height: 1;
+  }
+
+  /** List CSS **/
   .list-container {
     box-sizing: border-box;
     width: 100%;
     height: fit-content;
-    padding: 2em 10% 3em 10%;
+    padding: 0 10% 3em 10%;
   }
   .list-container > .md-list {
     box-sizing: border-box;
@@ -209,7 +236,8 @@ export default {
     display: flex;
     flex-direction: row;
   }
-  .flex-direction--column {
+  .flex-direction--column,
+  .card-body {
     display: flex;
     flex-direction: column;
   }
@@ -217,7 +245,8 @@ export default {
     flex: 2;
   }
   .flex-direction--row > div,
-  .flex-direction--column > .md-card {
+  .flex-direction--column > .md-card,
+  .card-body > div {
     flex: 1;
   }
   .md-card {

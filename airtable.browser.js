@@ -41,7 +41,7 @@ Base.prototype.runAction = function(method, path, queryParams, bodyData, callbac
 
 Base.prototype._checkStatusForError = function(statusCode, body) {
     if (statusCode === 401) {
-        return new AirtableError('AUTHENTICATION_REQUIRED', 'You should provide valid api key to perform this operation', statusCode);
+        return new AirtableError('AUTHENTICATION_REQUIRED', 'You should provide valid airtable-api key to perform this operation', statusCode);
     } else if (statusCode === 403) {
         return new AirtableError('NOT_AUTHORIZED', 'You are not authorized to perform this operation', statusCode);
     } else if (statusCode === 404) {
