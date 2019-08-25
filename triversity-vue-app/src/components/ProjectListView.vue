@@ -12,8 +12,11 @@
         </div>
       </b-card>
     </div>
-    <div class="list-container">
-      <md-list :md-expand-single="expandSingle">
+    <Loading v-if="isLoading" />
+    <div v-else class="list-container">
+      <NoResultsFound v-if="records.length === 0">
+      </NoResultsFound>
+      <md-list v-else :md-expand-single="expandSingle">
         <md-list-item class="list--header">
           <span class="md-list-item-text md-title">Projects</span>
         </md-list-item>
@@ -68,6 +71,8 @@
 import VueAirtableService from './airtable-api/VueAirtableService'
 import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
+import Loading from './Loading'
+import NoResultsFound from './NoResultsFound'
 
 export default {
   name: 'ProjectListView',
@@ -75,6 +80,8 @@ export default {
     'base'
   ],
   components: {
+    NoResultsFound,
+    Loading,
     SearchBar,
     CreateButton
   },
@@ -85,6 +92,7 @@ export default {
       records: [],
       expandProject: false,
       expandSingle: true,
+      isLoading: false,
       // variables for filter
       filters: [],
       filterQueries: [],
@@ -110,8 +118,10 @@ export default {
       if (this.filters.length > 0) {
         joinQueryForAllFilters = 'OR(' + this.filterQueries.join() + ')'
       }
+      this.isLoading = true
       var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
       this.records = response.data.records
+      this.isLoading = false
     },
     childMessageReceived: function (componentName, arg) {
       switch (componentName) {
@@ -128,8 +138,10 @@ export default {
         'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
         'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
         ')'
+      this.isLoading = true
       var response = await VueAirtableService.getRecords('Project', query)
       this.records = response.data.records
+      this.isLoading = false
     },
     async getTargetGroup () {
       var response = await VueAirtableService.getRecords('TargetGroup')
