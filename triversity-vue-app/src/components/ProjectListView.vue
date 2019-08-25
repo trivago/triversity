@@ -7,52 +7,8 @@
       </div>
     </div>
     <div class="filter-container">
-<!--      comp. &ndash;&gt; filtering with input-text(not drop-down) that user entered and call api with the query and this will be shown as a chip(tag-chip)-->
       <b-card bg-variant="light">
         <div>
-          <b-form-group label-row-sm="2"
-                        label="Status"
-                        label-size="sm"
-                        label-class="pt-0">
-            <b-form-group id="fgStatusUniv"
-                          label="University"
-                          label-size="sm"
-                          label-cols="2"
-                          label-align="right"
-                          label-for="filterStatusUniversity"
-                          class="filter-label">
-              <b-form-select v-model="filterStatusUniversity"
-                             :options="filterStatusOptions"
-                             size="sm"
-                             id="filterStatusUniversity"
-                             class="mt-0" @change="filterStatus"></b-form-select>
-            </b-form-group>
-            <b-form-group id="fgStatusMentor"
-                          label="Mentor"
-                          label-size="sm"
-                          label-cols="2"
-                          label-align="right"
-                          label-for="filterStatusMentor"
-                          class="filter-label">
-              <b-form-select v-model="filterStatusMentor"
-                             :options="filterStatusOptions"
-                             size="sm"
-                             id="filterStatusMentor"
-                             class="mt-3" @change="filterStatus"></b-form-select>
-            </b-form-group>
-          </b-form-group>
-        </div>
-        <div>
-          <b-form-group label-row-sm="2"
-                        label="Target Group"
-                        label-size="sm"
-                        label-class="pt-0">
-            <b-form-select v-model="filterTargetGroup"
-                           :options="filterTargetGroupOptions"
-                           size="sm"
-                           id="filterTargetGroup"
-                           class="mt-0"></b-form-select>
-          </b-form-group>
         </div>
       </b-card>
     </div>
@@ -61,7 +17,7 @@
         <md-list-item class="list--header">
           <span class="md-list-item-text md-title">Projects</span>
         </md-list-item>
-        <div v-for="record in showingRecords" :key="record.id">
+        <div v-for="record in records" :key="record.id">
           <md-list-item md-expand :md-expanded.sync="record._showDetails">
             <span class="md-list-item-text">{{ record.fields['Name'] }}</span>
             <div slot="md-expand" class="project__details flex-direction--column">
@@ -109,7 +65,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import VueAirtableService from './airtable-api/VueAirtableService'
 import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
 
@@ -127,25 +83,13 @@ export default {
       apiUrl: 'https://api.airtable.com/v0/',
       apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
-      showingRecords: [],
       expandProject: false,
       expandSingle: true,
       // variables for filter
-      filterStatusUniversity: null,
-      filterStatusMentor: null,
-      filterStatusOptions: [
-        { value: null, text: 'all' },
-        { value: 'assigned', text: 'assigned' },
-        { value: 'open', text: 'not assigned' }
-      ],
-      filterTargetGroup: null,
-      filterTargetGroupOptions: [
-        { value: null, text: 'all' },
-        { value: 'Tech', text: 'Tech' },
-        { value: 'Marketing', text: 'Marketing' },
-        { value: 'Finance', text: 'Finance' },
-        { value: 'Data Engineering', text: 'Data Engineering' }
-      ]
+      filters: [],
+      filterQueries: [],
+      filterTargetGroupOptions: [],
+      sort: ''
     }
   },
   mounted: function () {
@@ -153,6 +97,7 @@ export default {
       return console.error('Please specify `base` and `columns` attributes for <vue-airtable> component.')
     }
     this.getData()
+    this.getTargetGroup()
   },
   watch: {
     table: function (newTable, oldTable) {
@@ -160,19 +105,13 @@ export default {
     }
   },
   methods: {
-    getData: function () {
-      // ref: vue kitchensink project
-      // vueairtable as a component and getData -> vueairtable
-      axios({
-        url: this.apiUrl + this.base + '/Project',
-        headers: {
-          'Authorization': 'Bearer ' + process.env.AIRTABLE_API_KEY
-        }
-      }).then((res) => {
-        this.records = res.data.records
-        this.showingRecords = this.records
-        console.log(this.records)
-      })
+    async getData () {
+      var joinQueryForAllFilters = ''
+      if (this.filters.length > 0) {
+        joinQueryForAllFilters = 'OR(' + this.filterQueries.join() + ')'
+      }
+      var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
+      this.records = response.data.records
     },
     childMessageReceived: function (componentName, arg) {
       switch (componentName) {
@@ -181,34 +120,36 @@ export default {
           break
       }
     },
-    searchAllRecordsWithInput: function (searchText) {
-      if (this.records == null) {
-        this.showingRecords = []
-      } else {
-        this.records.forEach((record) => {
-          // search
-        })
-      }
+    async searchAllRecordsWithInput (searchText) {
+      var query = 'OR(' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Name})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Target Group})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Mentor})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
+        'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
+        ')'
+      var response = await VueAirtableService.getRecords('Project', query)
+      this.records = response.data.records
     },
-    filterStatus: function () {
-      // call
-      // using tags
+    async getTargetGroup () {
+      var response = await VueAirtableService.getRecords('TargetGroup')
+      response.data.records.forEach((record) => {
+        this.filterTargetGroupOptions.push(record.fields['Name'])
+      })
+    },
+    addFilter: function (value) {
+      this.filters.push(value)
+      var query = 'FIND(\'' + value + '\', {Target Group})'
+      this.filterQueries.push(query)
     },
     onDelete: function (id) {
       if (confirm('Do you really want to delete?')) {
-        axios({
-          method: 'delete',
-          url: this.apiUrl + this.base + '/Project/' + id,
-          headers: {
-            'Authorization': 'Bearer ' + this.apiKey
-          }
-        }).then((res) => {
-          console.log('Removing Data : ' + id)
-          alert('Successfully Delete!')
+        VueAirtableService.deleteRecord('Project', id).then((res) => {
+          alert('The record is deleted.')
           this.getData()
-        }).catch(e => {
-          alert('Error: ' + e)
-          console.log('Error: ' + e)
+        }).catch(error => {
+          alert('Error: ' + error)
+          console.log('Error in onDelete: ' + error)
         })
       }
     }
@@ -233,13 +174,14 @@ export default {
     display: flex;
     width: 100%;
     height: auto;
-    margin-left: auto;
-    margin-right: auto;
     margin-bottom: 1%;
     justify-content: space-between;
   }
+  .input-group {
+    width: 50% !important;
+  }
   #searchBar {
-    width: 30%;
+    width: 50%;
     margin-right: 3%;
   }
   /** Filter CSS **/

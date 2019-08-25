@@ -67,6 +67,8 @@
 
 <script>
 import axios from 'axios'
+import VueAirtableService from './airtable-api/VueAirtableService'
+
 export default {
   name: 'AddProjectPage',
   props: [
@@ -107,34 +109,24 @@ export default {
         console.log('Error: ' + e)
       })
     },
-    onSubmit (evt) {
+    async onSubmit (evt) {
       evt.preventDefault()
 
-      axios({
-        method: 'post',
-        url: this.apiUrl + this.base + '/Project',
-        headers: {
-          'Authorization': 'Bearer keyVzJe5qGOll341v',
-          'Content-Type': 'application/json'
-        },
-        data: '{' +
-                '"fields": {' +
-                    '"Name" : "' + this.form.projectTitle + '",' +
-                    '"Target Group" : "' + this.form.targetGroup + '",' +
-                    '"Mentor" : "' + this.form.mentor + '",' +
-                    '"EmpNum" : "' + this.form.employeeNumber + '",' +
-                    '"University" : "' + this.form.university + '",' +
-                    '"Project Description" : "' + this.form.projectDescription +
-                          '"}' +
-              '}'
-      }).then(response => {
-        if (response.status === 200) {
-          alert('Project added to the list')
-          this.$router.go(-1)
+      var data = {
+        'fields': {
+          'Name': this.form.projectTitle,
+          'Target Group': this.form.targetGroup,
+          'Mentor': this.form.mentor,
+          'EmpNum': this.form.employeeNumber,
+          'University': this.form.university,
+          'Project Description': this.form.projectDescription
         }
-      }).catch(e => {
-        console.log('Error: ' + e)
-      })
+      }
+      var response = await VueAirtableService.createRecord('Project', data)
+      if (response.status === 200) {
+        alert('Project added to the list')
+        this.$router.go(-1)
+      }
     }
   }
 }
