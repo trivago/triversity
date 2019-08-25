@@ -7,15 +7,36 @@
       </div>
     </div>
     <div class="filter-container">
-      <b-card bg-variant="light">
-        <div>
+      <div class="flex-direction--row">
+        <div class="filter--box">
+          <md-autocomplete
+            v-model="filterTextTargetGroup"
+            :md-options="filterTargetGroupOptions"
+            md-dense>
+            <label>Target group</label>
+          </md-autocomplete>
         </div>
-      </b-card>
+        <div class="filter--box">
+          <md-autocomplete
+            v-model="filterTextUniversity"
+            :md-options="filterUniversityOptions"
+            md-dense>
+            <label>University</label>
+          </md-autocomplete>
+        </div>
+        <div class="filter--box">
+          <md-autocomplete
+            v-model="filterTextMentor"
+            :md-options="filterMentorOptions"
+            md-dense>
+            <label>Mentor</label>
+          </md-autocomplete>
+        </div>
+      </div>
     </div>
     <Loading v-if="isLoading" />
     <div v-else class="list-container">
-      <NoResultsFound v-if="records.length === 0">
-      </NoResultsFound>
+      <NoResultsFound v-if="records.length === 0"></NoResultsFound>
       <md-list v-else :md-expand-single="expandSingle">
         <md-list-item class="list--header">
           <span class="md-list-item-text md-title">Projects</span>
@@ -25,7 +46,7 @@
             <span class="md-list-item-text">{{ record.fields['Name'] }}</span>
             <div slot="md-expand" class="project__details flex-direction--column">
               <div class="flex-direction--row">
-                <div>
+                <div class="project__detail__project-description">
                   <md-card>
                     <span class="project__details__title">Project Description:</span>
                     <p class="project__details__content">{{ record.fields['Project Description'] }}</p>
@@ -90,13 +111,17 @@ export default {
       apiUrl: 'https://api.airtable.com/v0/',
       apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
-      expandProject: false,
       expandSingle: true,
       isLoading: false,
       // variables for filter
+      filterTextTargetGroup: '',
+      filterTextUniversity: '',
+      filterTextMentor: '',
       filters: [],
       filterQueries: [],
       filterTargetGroupOptions: [],
+      filterUniversityOptions: [],
+      filterMentorOptions: [],
       sort: ''
     }
   },
@@ -106,11 +131,8 @@ export default {
     }
     this.getData()
     this.getTargetGroup()
-  },
-  watch: {
-    table: function (newTable, oldTable) {
-      this.getData()
-    }
+    this.getUniversities()
+    this.getMentors()
   },
   methods: {
     async getData () {
@@ -147,6 +169,18 @@ export default {
       var response = await VueAirtableService.getRecords('TargetGroup')
       response.data.records.forEach((record) => {
         this.filterTargetGroupOptions.push(record.fields['Name'])
+      })
+    },
+    async getUniversities () {
+      var response = await VueAirtableService.getRecords('University')
+      response.data.records.forEach((record) => {
+        this.filterUniversityOptions.push(record.fields['Name'])
+      })
+    },
+    async getMentors () {
+      var response = await VueAirtableService.getRecords('Mentor')
+      response.data.records.forEach((record) => {
+        this.filterMentorOptions.push(record.fields['Name'])
       })
     },
     addFilter: function (value) {
@@ -202,9 +236,13 @@ export default {
     background-color: #EBECED;
     width: 100%;
     height: fit-content;
-    line-height: 50px;
-    vertical-align: bottom;
-    padding: .5em 10%;
+    padding: 0 10% .5em 10%;
+  }
+  .filter--box {
+    box-sizing: border-box;
+    padding: .5em 0 .5em .5em;
+    text-align: start;
+    font-size: 1rem;
   }
   .form-group {
     padding: 0;
@@ -225,7 +263,7 @@ export default {
   }
   .list-container > .md-list {
     box-sizing: border-box;
-    max-width: 100%;
+    width: 100%;
     display: inline-block;
     vertical-align: top;
     border: 1px solid #00000012;
@@ -251,13 +289,14 @@ export default {
     display: flex;
     flex-direction: column;
   }
-  .flex-direction--row > div:nth-child(1) {
-    flex: 2;
-  }
   .flex-direction--row > div,
   .flex-direction--column > .md-card,
-  .card-body > div {
+  .card-body > div,
+  .filter--box {
     flex: 1;
+  }
+  .flex-direction--row > .project__detail__project-description {
+    flex: 2;
   }
   .md-card {
     box-sizing: border-box;
