@@ -17,7 +17,7 @@ export default {
   },
   updateRecord: function (table, recordId, data) {
     VueAirtable.defaults.headers['Content-Type'] = 'application/json'
-    return VueAirtable.post(`${table}/${recordId}`, data)
+    return VueAirtable.patch(`${table}/${recordId}`, data)
   },
   deleteRecord: function (table, recordId) {
     return VueAirtable.delete(`${table}/${recordId}`)

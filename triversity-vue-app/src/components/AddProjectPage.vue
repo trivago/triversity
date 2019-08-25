@@ -122,6 +122,7 @@ export default {
           'Project Description': this.form.projectDescription
         }
       }
+
       var response = await VueAirtableService.createRecord('Project', data)
       if (response.status === 200) {
         alert('Project added to the list')

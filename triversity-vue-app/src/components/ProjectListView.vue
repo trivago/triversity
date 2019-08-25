@@ -7,31 +7,23 @@
       </div>
     </div>
     <div class="filter-container">
-      <div class="flex-direction--row">
-        <div class="filter--box">
-          <md-autocomplete
-            v-model="filterTextTargetGroup"
-            :md-options="filterTargetGroupOptions"
-            md-dense>
-            <label>Target group</label>
-          </md-autocomplete>
-        </div>
-        <div class="filter--box">
-          <md-autocomplete
-            v-model="filterTextUniversity"
-            :md-options="filterUniversityOptions"
-            md-dense>
-            <label>University</label>
-          </md-autocomplete>
-        </div>
-        <div class="filter--box">
-          <md-autocomplete
-            v-model="filterTextMentor"
-            :md-options="filterMentorOptions"
-            md-dense>
-            <label>Mentor</label>
-          </md-autocomplete>
-        </div>
+      <div class="md-layout md-gutter">
+        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
+                            :field="'Target Group'"
+                            :options="filterTargetGroupOptions"/>
+        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
+                            :field="'University'"
+                            :options="filterUniversityOptions"/>
+        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
+                            :field="'Mentor'"
+                            :options="filterMentorOptions"/>
+      </div>
+      <div>
+        <md-chips md-static md-check-duplicated class="md-primary shake-on-error">
+          <md-chip v-for="filter in filters" :key="filter"
+                   md-deletable
+                   @md-delete="deleteFilter(filter)">{{ filter }}</md-chip>
+        </md-chips>
       </div>
     </div>
     <Loading v-if="isLoading" />
@@ -94,6 +86,7 @@ import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
 import Loading from './Loading'
 import NoResultsFound from './NoResultsFound'
+import FilterAutocomplete from './FilterAutocomplete'
 
 export default {
   name: 'ProjectListView',
@@ -101,6 +94,7 @@ export default {
     'base'
   ],
   components: {
+    FilterAutocomplete,
     NoResultsFound,
     Loading,
     SearchBar,
@@ -134,6 +128,11 @@ export default {
     this.getUniversities()
     this.getMentors()
   },
+  watch: {
+    filters: function () {
+      this.getData()
+    }
+  },
   methods: {
     async getData () {
       var joinQueryForAllFilters = ''
@@ -145,10 +144,16 @@ export default {
       this.records = response.data.records
       this.isLoading = false
     },
-    childMessageReceived: function (componentName, arg) {
-      switch (componentName) {
+    childMessageReceived: function (title, arg) {
+      console.log(title, arg)
+      switch (title) {
         case 'SearchBar':
           this.searchAllRecordsWithInput(arg)
+          break
+        case 'Target Group':
+        case 'University':
+        case 'Mentor':
+          this.addFilter(title, arg)
           break
       }
     },
@@ -183,10 +188,26 @@ export default {
         this.filterMentorOptions.push(record.fields['Name'])
       })
     },
-    addFilter: function (value) {
-      this.filters.push(value)
-      var query = 'FIND(\'' + value + '\', {Target Group})'
-      this.filterQueries.push(query)
+    addFilter: function (field, value) {
+      if (this.filters.indexOf(value) > -1) {
+        // selected filter is already in filters array
+        var mdChips = document.getElementsByClassName('md-chip')
+        Array.from(mdChips).forEach((chip) => {
+          if (chip.innerText === value) {
+            chip.classList.add('md-duplicated')
+          }
+        })
+      } else {
+        this.filters.push(value)
+        var query = 'FIND(\'' + value + '\', {' + field + '})'
+        this.filterQueries.push(query)
+      }
+    },
+    deleteFilter: function (filter) {
+      var index = this.filters.indexOf(filter)
+      if (index > -1) {
+        this.filters.splice(index, 1)
+      }
     },
     onDelete: function (id) {
       if (confirm('Do you really want to delete?')) {
@@ -335,5 +356,18 @@ export default {
   a, a:visited, a:focus, a:hover {
     color: #616161;
     text-decoration: none;
+  }
+  .shake-on-error /deep/ .md-duplicated {
+    animation-name: shake;
+    animation-duration: 0.5s;
+  }
+
+  @keyframes shake {
+    0% { transform: translate(15px); }
+    20% { transform: translate(-15px); }
+    40% { transform: translate(7px); }
+    60% { transform: translate(-7px); }
+    80% { transform: translate(3px); }
+    100% { transform: translate(0px); }
   }
 </style>
