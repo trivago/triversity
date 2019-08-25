@@ -1,4 +1,3 @@
-/* eslint-disable *
 <template>
   <div class="create-form--container">
     <span>Create a Project</span>
@@ -117,6 +116,7 @@ export default {
           'Authorization': 'Bearer keyVzJe5qGOll341v',
           'Content-Type': 'application/json'
         },
+        //  TODO : Hardcoded
         data: '{' +
                 '"fields": {' +
                     '"Name" : "' + this.form.projectTitle + '",' +
@@ -129,7 +129,7 @@ export default {
               '}'
       }).then(response => {
         if (response.status === 200) {
-          alert('Project added to the list')
+          alert('Successfully added to the list')
           this.$router.go(-1)
         }
       }).catch(e => {

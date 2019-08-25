@@ -2,7 +2,8 @@
   <div>
     <div class="search-bar--container">
       <div class="horizontal--layout">
-        <SearchBar id="searchBar"></SearchBar>
+        <SearchBar id="searchBar">
+        </SearchBar>
         <CreateButton id="createBtn"></CreateButton>
       </div>
     </div>
@@ -78,7 +79,8 @@ export default {
   data: function () {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
-      apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
+      apiKey: process.env.AIRTABLE_API_KEY,
+      // apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
       fields: {
         'fields.Name': {
