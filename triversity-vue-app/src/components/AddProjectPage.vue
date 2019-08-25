@@ -87,7 +87,10 @@ export default {
       },
       universities: [{ text: 'Select University', value: null }],
       targetGroups: [{ text: 'Select One', value: null }, 'Tech', 'Marketing', 'Engineering', 'Finance'],
-      show: true
+      show: true,
+      prop: [
+        'function'
+      ]
     }
   },
   mounted: function () {

@@ -2,9 +2,8 @@
   <div>
     <div class="search-bar--container">
       <div class="horizontal--layout">
-
         <SearchBar @messageFromSearchBar="childMessageReceived" id="searchBar"></SearchBar>
-        <CreateButton id="createBtn"></CreateButton>
+        <b-button @click="$router.push('AddProjectPage')" id="createButton">Create</b-button>
       </div>
     </div>
     <div class="filter-container">
@@ -67,7 +66,6 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
 
 export default {
@@ -76,8 +74,7 @@ export default {
     'base'
   ],
   components: {
-    SearchBar,
-    CreateButton
+    SearchBar
   },
   data: function () {
     return {
@@ -181,6 +178,9 @@ export default {
   }
   .input-group {
     width: 50% !important;
+  }
+  #createButton {
+    align-self: flex-start;
   }
   #searchBar {
     width: 50%;
