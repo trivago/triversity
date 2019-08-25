@@ -1,6 +1,9 @@
 import VueAirtable from './VueAirtable'
 
 export default {
+  getRecord: function (table, recordId) {
+    return VueAirtable.get(`${table}/${recordId}`)
+  },
   getRecords: function (table, filter, sort) {
     return VueAirtable.get(
       `${table}`, {
@@ -17,7 +20,7 @@ export default {
   },
   updateRecord: function (table, recordId, data) {
     VueAirtable.defaults.headers['Content-Type'] = 'application/json'
-    return VueAirtable.post(`${table}/${recordId}`, data)
+    return VueAirtable.patch(`${table}/${recordId}`, data)
   },
   deleteRecord: function (table, recordId) {
     return VueAirtable.delete(`${table}/${recordId}`)

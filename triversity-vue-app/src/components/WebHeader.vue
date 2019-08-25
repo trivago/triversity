@@ -1,5 +1,5 @@
 <template>
-  <div class="header-container">
+  <div class="header-container" @click="$router.push({name: 'ProjectListView'})">
     <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span><br>
   </div>
 </template>

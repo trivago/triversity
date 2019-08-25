@@ -57,7 +57,7 @@
 
       <div class="div-buttons">
         <b-button id="submit-button" type="submit" variant="primary">Submit</b-button>
-        <b-button id="cancel-button" type="cancel" variant="danger" @click="$router.go(-1)">Cancel</b-button>
+        <b-button id="cancel-button" type="cancel" variant="danger" @click="$router.push({name: 'ProjectListView'})">Cancel</b-button>
       </div>
     </b-form>
 
@@ -77,6 +77,7 @@ export default {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
       apiKey: 'keyVzJe5qGOll341v',
+      recordId: null,
       form: {
         projectTitle: '',
         university: null,
@@ -87,16 +88,36 @@ export default {
       },
       universities: [{ text: 'Select University', value: null }],
       targetGroups: [{ text: 'Select One', value: null }, 'Tech', 'Marketing', 'Engineering', 'Finance'],
-      show: true,
-      prop: [
-        'function'
-      ]
+      show: true
     }
   },
   mounted: function () {
     this.getUniversityData()
+    this.recordId = this.$route.params.recordId
+    if (this.recordId != null) {
+      console.log('Edit Mode')
+      this.fillInputForm(this.recordId)
+    } else {
+      console.log('Create Mode')
+    }
   },
   methods: {
+    async fillInputForm (recordId) {
+      var response = await VueAirtableService.getRecord('Project', recordId)
+        .catch(e => {
+          console.log('Error: ' + e)
+        })
+      if (response.status === 200) {
+        this.form.projectTitle = response.data.fields.Name
+        this.form.university = response.data.fields.University
+        this.form.mentor = response.data.fields.Mentor
+        this.form.employeeNumber = response.data.fields.EmpNum
+        this.form.targetGroup = response.data.fields['Target Group']
+        this.form.projectDescription = response.data.fields['Project Description']
+      }
+
+      // VueAirtableService.updateRecord('Project', recordId, data)
+    },
     getUniversityData () {
       axios({
         url: this.apiUrl + this.base + '/University',
@@ -124,9 +145,23 @@ export default {
           'Project Description': this.form.projectDescription
         }
       }
-      var response = await VueAirtableService.createRecord('Project', data)
+      var response
+
+      if (this.recordId != null) {
+        console.log('Edit Mode')
+        response = await VueAirtableService.updateRecord('Project', this.recordId, data)
+      } else {
+        console.log('Create Mode')
+        response = await VueAirtableService.createRecord('Project', data)
+      }
       if (response.status === 200) {
-        alert('Project added to the list')
+        if (this.recordId != null) {
+          console.log('Edit Mode')
+          alert('Modified Data')
+        } else {
+          console.log('Create Mode')
+          alert('Project added to the list')
+        }
         this.$router.go(-1)
       }
     }

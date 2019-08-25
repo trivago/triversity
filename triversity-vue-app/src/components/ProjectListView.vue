@@ -54,7 +54,9 @@
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-                <b-button variant="link" class="text-decoration-none"><md-icon>edit</md-icon></b-button>
+<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', component: 'AddProjectPage', props: {base: 'asbd', recordId: record.id}})"><md-icon>edit</md-icon></b-button>-->
+<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({path: '/AddProjectPage/' + record.id})"><md-icon>edit</md-icon></b-button>-->
+                    <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
               </div>
             </div>
           </md-list-item>
