@@ -3,7 +3,7 @@
     <div class="search-bar--container">
       <div class="horizontal--layout">
         <SearchBar @messageFromSearchBar="childMessageReceived" id="searchBar"></SearchBar>
-        <CreateButton id="createBtn"></CreateButton>
+        <b-button @click="$router.push('AddProjectPage')" id="createButton">Create</b-button>
       </div>
     </div>
     <div class="filter-container">
@@ -70,7 +70,9 @@
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-                <b-button variant="link" class="text-decoration-none"><md-icon>edit</md-icon></b-button>
+<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', component: 'AddProjectPage', props: {base: 'asbd', recordId: record.id}})"><md-icon>edit</md-icon></b-button>-->
+<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({path: '/AddProjectPage/' + record.id})"><md-icon>edit</md-icon></b-button>-->
+                    <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
               </div>
             </div>
           </md-list-item>
@@ -82,7 +84,6 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-import CreateButton from './CreateButton'
 import SearchBar from './SearchBar'
 import Loading from './Loading'
 import NoResultsFound from './NoResultsFound'
@@ -97,13 +98,13 @@ export default {
     FilterAutocomplete,
     NoResultsFound,
     Loading,
-    SearchBar,
-    CreateButton
+    SearchBar
   },
   data: function () {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
-      apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
+      apiKey: process.env.AIRTABLE_API_KEY,
+      // apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
       expandSingle: true,
       isLoading: false,
@@ -247,6 +248,9 @@ export default {
   .input-group {
     width: 50% !important;
   }
+  #createButton {
+    align-self: flex-start;
+  }
   #searchBar {
     width: 50%;
     margin-right: 3%;
@@ -313,9 +317,6 @@ export default {
   .flex-direction--row > div,
   .flex-direction--column > .md-card,
   .card-body > div,
-  .filter--box {
-    flex: 1;
-  }
   .flex-direction--row > .project__detail__project-description {
     flex: 2;
   }
@@ -361,7 +362,6 @@ export default {
     animation-name: shake;
     animation-duration: 0.5s;
   }
-
   @keyframes shake {
     0% { transform: translate(15px); }
     20% { transform: translate(-15px); }

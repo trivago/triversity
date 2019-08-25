@@ -23,6 +23,14 @@ export default new Router({
       props: {
         base: 'appkmRgOBmQGWlfoc'
       }
+    },
+    {
+      path: '/AddProjectPage/:recordId',
+      name: 'EditProjectPage',
+      component: AddProjectPage,
+      props: {
+        base: 'appkmRgOBmQGWlfoc'
+      }
     }
   ]
 })

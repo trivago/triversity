@@ -1,6 +1,9 @@
 import VueAirtable from './VueAirtable'
 
 export default {
+  getRecord: function (table, recordId) {
+    return VueAirtable.get(`${table}/${recordId}`)
+  },
   getRecords: function (table, filter, sort) {
     return VueAirtable.get(
       `${table}`, {
