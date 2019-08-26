@@ -144,6 +144,7 @@ export default {
       var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
       this.records = response.data.records
       this.isLoading = false
+      console.log(response)
     },
     childMessageReceived: function (title, arg) {
       console.log(title, arg)
