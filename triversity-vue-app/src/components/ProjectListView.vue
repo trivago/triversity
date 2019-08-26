@@ -6,26 +6,32 @@
         <b-button @click="$router.push('AddProjectPage')" id="createButton">Create</b-button>
       </div>
     </div>
-    <div class="filter-container">
-      <div class="md-layout md-gutter">
-        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
-                            :field="'Target Group'"
-                            :options="filterTargetGroupOptions"/>
-        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
-                            :field="'University'"
-                            :options="filterUniversityOptions"/>
-        <FilterAutocomplete @messageFromFilterAutocomplete="childMessageReceived"
-                            :field="'Mentor'"
-                            :options="filterMentorOptions"/>
-      </div>
-      <div>
-        <md-chips md-static md-check-duplicated class="md-primary shake-on-error">
-          <md-chip v-for="filter in filters" :key="filter"
-                   md-deletable
-                   @md-delete="deleteFilter(filter)">{{ filter }}</md-chip>
-        </md-chips>
-      </div>
-    </div>
+    <b-container fluid class="filter-container">
+      <b-row>
+        <b-col class="text-sm-left"><small><strong>Filters:</strong></small></b-col>
+        <div class="w-100"></div>
+        <b-col>
+          <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
+                             :field="'Target Group'"
+                             :options="filterTargetGroupOptions"
+                             :multiple="true" :taggable="true"/>
+        </b-col>
+        <b-col>
+          <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
+                             :field="'University'"
+                             :options="filterUniversityOptions"
+                             :multiple="true" :taggable="true"/>
+        </b-col>
+        <b-col>
+          <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
+                             :field="'Mentor'"
+                             :options="filterMentorOptions"
+                             :multiple="true" :taggable="true"/>
+        </b-col>
+        <div class="w-100"></div>
+        <b-col class="text-sm-right" style="padding-top: .5em"><small> Reset filters</small><md-icon>clear</md-icon></b-col>
+      </b-row>
+    </b-container>
     <Loading v-if="isLoading" />
     <div v-else class="list-container">
       <NoResultsFound v-if="records.length === 0"></NoResultsFound>
@@ -35,7 +41,9 @@
         </md-list-item>
         <div v-for="record in records" :key="record.id">
           <md-list-item md-expand :md-expanded.sync="record._showDetails">
-            <span class="md-list-item-text">{{ record.fields['Name'] }}</span>
+            <ListItem :title="record.fields['Name']"
+                      :date="{'start': record.fields['startDate'], 'end': record.fields['endDate']}"/>
+<!--            <span class="md-list-item-text">{{ record.fields['Name'] }}</span>-->
             <div slot="md-expand" class="project__details flex-direction--column">
               <div class="flex-direction--row">
                 <div class="project__detail__project-description">
@@ -63,6 +71,7 @@
                            v-for="file in record.fields['Attachment']" :key="file.id">
                         <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
                           <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
+                          <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>
                         </md-button>
                       </div>
                     </md-card>
@@ -88,6 +97,8 @@ import SearchBar from './SearchBar'
 import Loading from './Loading'
 import NoResultsFound from './NoResultsFound'
 import FilterAutocomplete from './FilterAutocomplete'
+import ListItem from './ListItem'
+import FilterMultiselect from './FilterMultiselect'
 
 export default {
   name: 'ProjectListView',
@@ -95,6 +106,8 @@ export default {
     'base'
   ],
   components: {
+    FilterMultiselect,
+    ListItem,
     FilterAutocomplete,
     NoResultsFound,
     Loading,
@@ -104,7 +117,6 @@ export default {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
       apiKey: process.env.AIRTABLE_API_KEY,
-      // apiKey: 'keyVzJe5qGOll341v', // Always use a read-only account token
       records: [],
       expandSingle: true,
       isLoading: false,
@@ -112,12 +124,13 @@ export default {
       filterTextTargetGroup: '',
       filterTextUniversity: '',
       filterTextMentor: '',
-      filters: [],
+      filters: {},
       filterQueries: [],
       filterTargetGroupOptions: [],
       filterUniversityOptions: [],
       filterMentorOptions: [],
-      sort: ''
+      sort: '',
+      taggedFilter: ''
     }
   },
   mounted: function () {
@@ -129,24 +142,20 @@ export default {
     this.getUniversities()
     this.getMentors()
   },
-  watch: {
-    filters: function () {
-      this.getData()
-    }
-  },
   methods: {
     async getData () {
       var joinQueryForAllFilters = ''
-      if (this.filters.length > 0) {
-        joinQueryForAllFilters = 'OR(' + this.filterQueries.join() + ')'
+      if (Object.keys(this.filters).length > 0) {
+        joinQueryForAllFilters = 'AND(' + Object.values(this.filters).join() + ')'
       }
+      console.log(joinQueryForAllFilters)
+
       this.isLoading = true
       var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
       this.records = response.data.records
       this.isLoading = false
     },
     childMessageReceived: function (title, arg) {
-      console.log(title, arg)
       switch (title) {
         case 'SearchBar':
           this.searchAllRecordsWithInput(arg)
@@ -189,26 +198,13 @@ export default {
         this.filterMentorOptions.push(record.fields['Name'])
       })
     },
-    addFilter: function (field, value) {
-      if (this.filters.indexOf(value) > -1) {
-        // selected filter is already in filters array
-        var mdChips = document.getElementsByClassName('md-chip')
-        Array.from(mdChips).forEach((chip) => {
-          if (chip.innerText === value) {
-            chip.classList.add('md-duplicated')
-          }
-        })
+    addFilter: function (field, filter) {
+      if (this.filters.length > 0 && this.filters.hasKey(field)) {
+        this.filters[field] = filter
       } else {
-        this.filters.push(value)
-        var query = 'FIND(\'' + value + '\', {' + field + '})'
-        this.filterQueries.push(query)
+        Object.assign(this.filters, { [field]: filter })
       }
-    },
-    deleteFilter: function (filter) {
-      var index = this.filters.indexOf(filter)
-      if (index > -1) {
-        this.filters.splice(index, 1)
-      }
+      this.getData()
     },
     onDelete: function (id) {
       if (confirm('Do you really want to delete?')) {
@@ -236,7 +232,7 @@ export default {
     width: 100%;
     height: fit-content;
     background-color: #EBECED;
-    padding-top: .5em;
+    padding-top: 1em;
     padding-left: 10%;
     padding-right: 10%;
   }

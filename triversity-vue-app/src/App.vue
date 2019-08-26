@@ -25,6 +25,7 @@ html {
 }
 body {
   height: 100%;
+  background-color: #f3f3f3
 }
 #app {
   box-sizing: border-box;

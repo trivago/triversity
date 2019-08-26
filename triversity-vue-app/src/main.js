@@ -10,11 +10,14 @@ import 'vue-material/dist/theme/default.css'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import Multiselect from 'vue-multiselect'
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 
 Vue.config.productionTip = false
 Vue.use(VueMaterial)
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
+Vue.component('multiselect', Multiselect)
 
 /* eslint-disable no-new */
 new Vue({
