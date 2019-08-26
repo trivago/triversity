@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="listview-content">
     <div class="search-bar--container">
       <div class="horizontal--layout">
         <SearchBar @messageFromSearchBar="childMessageReceived" id="searchBar"></SearchBar>
@@ -228,6 +228,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .listview-content {
+    background-color: #f3f3f3;
+  }
   .search-bar--container {
     box-sizing: border-box;
     width: 100%;
