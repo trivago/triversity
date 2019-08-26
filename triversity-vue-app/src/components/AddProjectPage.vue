@@ -71,13 +71,10 @@ export default {
         targetGroup: [],
         projectDescription: ''
       },
-      uniIdNameMap: null,
       uniNameIdMap: null,
       uniTable: [],
-      tgIdNameMap: null,
       tgNameIdMap: null,
       tgTable: [],
-      mentorIdNameMap: null,
       mentorNameIdMap: null,
       mentorTable: [],
       targetGroupOptions: [],
@@ -162,8 +159,6 @@ export default {
           'Project Description': this.form.projectDescription
         }
       }
-
-      console.log(data)
 
       var response
 

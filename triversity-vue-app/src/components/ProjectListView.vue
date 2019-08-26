@@ -49,7 +49,6 @@
                       <span class="project__details__title">University:</span>
                       <p class="project__details__content" v-if="record.fields['Universities']">
                         {{ record.fields['Universities'].join(', ') }}
-<!--                        <span v-for="university in record.fields['Universities']" :key="university">{{ university }}</span>-->
                       </p>
                       <p class="project__details__content" v-else>open</p>
                     </md-card>
@@ -75,8 +74,6 @@
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', component: 'AddProjectPage', props: {base: 'asbd', recordId: record.id}})"><md-icon>edit</md-icon></b-button>-->
-<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({path: '/AddProjectPage/' + record.id})"><md-icon>edit</md-icon></b-button>-->
                     <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
               </div>
             </div>
