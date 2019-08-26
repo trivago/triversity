@@ -47,12 +47,17 @@
                 <div class="flex-direction--column">
                     <md-card>
                       <span class="project__details__title">University:</span>
-                      <p class="project__details__content" v-if="record.fields['University']">{{ record.fields['University'] }}</p>
+                      <p class="project__details__content" v-if="record.fields['Universities']">
+                        {{ record.fields['Universities'].join(', ') }}
+<!--                        <span v-for="university in record.fields['Universities']" :key="university">{{ university }}</span>-->
+                      </p>
                       <p class="project__details__content" v-else>open</p>
                     </md-card>
                     <md-card>
                       <span class="project__details__title">Mentor:</span>
-                      <p class="project__details__content" v-if="record.fields['Mentor']">{{ record.fields['Mentor'] }}</p>
+                      <p class="project__details__content" v-if="record.fields['Mentors']">
+                        {{ record.fields['Mentors'].join(', ') }}
+                      </p>
                       <p class="project__details__content" v-else>open</p>
                     </md-card>
                   </div>
