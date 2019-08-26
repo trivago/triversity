@@ -55,12 +55,16 @@
                 <div class="flex-direction--column">
                     <md-card>
                       <span class="project__details__title">University:</span>
-                      <p class="project__details__content" v-if="record.fields['University']">{{ record.fields['University'] }}</p>
+                      <p class="project__details__content" v-if="record.fields['Universities']">
+                        {{ record.fields['Universities'].join(', ') }}
+                      </p>
                       <p class="project__details__content" v-else>open</p>
                     </md-card>
                     <md-card>
                       <span class="project__details__title">Mentor:</span>
-                      <p class="project__details__content" v-if="record.fields['Mentor']">{{ record.fields['Mentor'] }}</p>
+                      <p class="project__details__content" v-if="record.fields['Mentors']">
+                        {{ record.fields['Mentors'].join(', ') }}
+                      </p>
                       <p class="project__details__content" v-else>open</p>
                     </md-card>
                   </div>
@@ -79,8 +83,6 @@
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', component: 'AddProjectPage', props: {base: 'asbd', recordId: record.id}})"><md-icon>edit</md-icon></b-button>-->
-<!--                <b-button variant="link" class="text-decoration-none" @click="$router.push({path: '/AddProjectPage/' + record.id})"><md-icon>edit</md-icon></b-button>-->
                     <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
               </div>
             </div>
@@ -154,6 +156,7 @@ export default {
       var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
       this.records = response.data.records
       this.isLoading = false
+      console.log(response)
     },
     childMessageReceived: function (title, arg) {
       switch (title) {

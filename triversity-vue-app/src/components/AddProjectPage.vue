@@ -1,7 +1,7 @@
 <template>
   <div class="create-form--container">
     <span>Create a Project</span>
-    <b-form @submit="onSubmit" v-if="show" class="project-form">
+    <b-form @submit="onSubmit" v-if="show" class="project-form" >
       <b-form-group id="input-group-project-title" label="Project Title:" label-for="input-project-title">
         <b-form-input
           id="input-project-title"
@@ -12,37 +12,21 @@
       </b-form-group>
 
       <b-form-group id="input-group-university" label="University:" label-for="input-university">
-        <b-form-select
-          id="input-university"
-          v-model="form.university"
-          :options="universities"
-          required
-        ></b-form-select>
+        <div>
+          <multiselect v-model="form.university" tag-placeholder="Add this as new University" placeholder="Search or add a new University" :options="universityOptions" :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
+        </div>
       </b-form-group>
 
       <b-form-group id="input-group-mentor" label="Mentor Name:" label-for="input-mentor">
-        <b-form-input
-          id="input-mentor"
-          v-model="form.mentor"
-          placeholder="Enter Mentor Name"
-        ></b-form-input>
-      </b-form-group>
-
-      <b-form-group id="input-group-emp-num" label="Employee Number:" label-for="input-emp-num">
-        <b-form-input
-          id="input-emp-num"
-          v-model="form.employeeNumber"
-          placeholder="Enter Mentor's Employee Number"
-        ></b-form-input>
+        <div>
+          <multiselect v-model="form.mentor" tag-placeholder="Add this as new mentor" placeholder="Search or add a new mentor" :options="mentorOptions" :multiple="true" :taggable="true" @tag="addMentor"></multiselect>
+        </div>
       </b-form-group>
 
       <b-form-group id="input-group-target-group" label="Target Group:" label-for="input-target-group">
-        <b-form-select
-          id="input-target-group"
-          v-model="form.targetGroup"
-          :options="targetGroups"
-          required
-        ></b-form-select>
+        <div>
+          <multiselect v-model="form.targetGroup" tag-placeholder="Add this as new target group" placeholder="Search or add a new target group" :options="targetGroupOptions" :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
+        </div>
       </b-form-group>
 
       <b-form-group id="input-group-project-description" label="Project Description:" label-for="input-project-description">
@@ -65,11 +49,12 @@
 </template>
 
 <script>
-import axios from 'axios'
 import VueAirtableService from './airtable-api/VueAirtableService'
+import FilterAutocomplete from './FilterAutocomplete'
 
 export default {
   name: 'AddProjectPage',
+  components: {FilterAutocomplete},
   props: [
     'base'
   ],
@@ -80,19 +65,29 @@ export default {
       recordId: null,
       form: {
         projectTitle: '',
-        university: null,
-        mentor: '',
-        employeeNumber: '',
-        targetGroup: null,
+        university: [],
+        mentor: [],
+        employeeNumber: [],
+        targetGroup: [],
         projectDescription: ''
       },
-      universities: [{ text: 'Select University', value: null }],
-      targetGroups: [{ text: 'Select One', value: null }, 'Tech', 'Marketing', 'Engineering', 'Finance'],
+      uniNameIdMap: null,
+      uniTable: [],
+      tgNameIdMap: null,
+      tgTable: [],
+      mentorNameIdMap: null,
+      mentorTable: [],
+      targetGroupOptions: [],
+      universityOptions: [],
+      mentorOptions: [],
       show: true
     }
   },
   mounted: function () {
-    this.getUniversityData()
+    this.mapData()
+    this.getTargetGroup()
+    this.getUniversities()
+    this.getMentors()
     this.recordId = this.$route.params.recordId
     if (this.recordId != null) {
       console.log('Edit Mode')
@@ -109,42 +104,62 @@ export default {
         })
       if (response.status === 200) {
         this.form.projectTitle = response.data.fields.Name
-        this.form.university = response.data.fields.University
-        this.form.mentor = response.data.fields.Mentor
-        this.form.employeeNumber = response.data.fields.EmpNum
-        this.form.targetGroup = response.data.fields['Target Group']
+        this.form.university = response.data.fields['Universities']
+        this.form.mentor = response.data.fields['Mentors']
+        this.form.employeeNumber = response.data.fields['MentorsEmpNum']
+        this.form.targetGroup = response.data.fields['TargetGroups']
         this.form.projectDescription = response.data.fields['Project Description']
+        this.uniTable = response.data.fields.uniTable
+        this.mentorTable = response.data.fields.mentorTable
+        this.tgTable = response.data.fields.tgTable
       }
-
-      // VueAirtableService.updateRecord('Project', recordId, data)
     },
-    getUniversityData () {
-      axios({
-        url: this.apiUrl + this.base + '/University',
-        headers: {
-          'Authorization': 'Bearer keyVzJe5qGOll341v'
-        }
-      }).then((response) => {
-        for (var i = 0; i < response.data.records.length; i++) {
-          this.universities.push(response.data.records[i].fields.Name)
-        }
-      }).catch(e => {
-        console.log('Error: ' + e)
+    async getTargetGroup () {
+      var response = await VueAirtableService.getRecords('TargetGroup')
+      response.data.records.forEach((record) => {
+        this.targetGroupOptions.push(record.fields['Name'])
+      })
+    },
+    async getUniversities () {
+      var response = await VueAirtableService.getRecords('University')
+      response.data.records.forEach((record) => {
+        this.universityOptions.push(record.fields['Name'])
+      })
+    },
+    async getMentors () {
+      var response = await VueAirtableService.getRecords('Mentor')
+      response.data.records.forEach((record) => {
+        this.mentorOptions.push(record.fields['Name'])
       })
     },
     async onSubmit (evt) {
       evt.preventDefault()
 
+      this.uniTable = []
+      for (var i = 0; i < this.form.university.length; i++) {
+        this.uniTable.push(this.uniNameIdMap.get(this.form.university[i]))
+      }
+
+      this.tgTable = []
+      for (var j = 0; j < this.form.targetGroup.length; j++) {
+        this.tgTable.push(this.tgNameIdMap.get(this.form.targetGroup[j]))
+      }
+
+      this.mentorTable = []
+      for (var k = 0; k < this.form.mentor.length; k++) {
+        this.mentorTable.push(this.mentorNameIdMap.get(this.form.mentor[k]))
+      }
+
       var data = {
         'fields': {
           'Name': this.form.projectTitle,
-          'Target Group': this.form.targetGroup,
-          'Mentor': this.form.mentor,
-          'EmpNum': this.form.employeeNumber,
-          'University': this.form.university,
+          'tgTable': this.tgTable,
+          'mentorTable': this.mentorTable,
+          'uniTable': this.uniTable,
           'Project Description': this.form.projectDescription
         }
       }
+
       var response
 
       if (this.recordId != null) {
@@ -154,6 +169,7 @@ export default {
         console.log('Create Mode')
         response = await VueAirtableService.createRecord('Project', data)
       }
+
       if (response.status === 200) {
         if (this.recordId != null) {
           console.log('Edit Mode')
@@ -163,6 +179,75 @@ export default {
           alert('Project added to the list')
         }
         this.$router.go(-1)
+      }
+    },
+    async mapData () {
+      // this.uniIdNameMap = new Map()
+      this.uniNameIdMap = new Map()
+      var uniResponse = await VueAirtableService.getRecords('University')
+
+      uniResponse.data.records.forEach((record) => {
+        // this.uniIdNameMap.set(record.id, record.fields.Name)
+        this.uniNameIdMap.set(record.fields.Name, record.id)
+      })
+
+      this.tgNameIdMap = new Map()
+      var tgResponse = await VueAirtableService.getRecords('TargetGroup')
+
+      tgResponse.data.records.forEach((record) => {
+        this.tgNameIdMap.set(record.fields.Name, record.id)
+      })
+
+      this.mentorNameIdMap = new Map()
+      var mentorResponse = await VueAirtableService.getRecords('Mentor')
+
+      mentorResponse.data.records.forEach((record) => {
+        this.mentorNameIdMap.set(record.fields.Name, record.id)
+      })
+    },
+    async addUniversity (uniName) {
+      this.form.university.push(uniName)
+
+      var data = {
+        'fields': {
+          'Name': uniName
+        }
+      }
+
+      var createUniResponse = await VueAirtableService.createRecord('University', data)
+      if (createUniResponse.status === 200) {
+        this.uniNameIdMap.set(uniName, createUniResponse.data.id)
+        alert('new University is added into the database')
+      }
+    },
+    async addTargetGroup (targetGroupName) {
+      this.form.targetGroup.push(targetGroupName)
+
+      var data = {
+        'fields': {
+          'Name': targetGroupName
+        }
+      }
+
+      var createTgResponse = await VueAirtableService.createRecord('TargetGroup', data)
+      if (createTgResponse.status === 200) {
+        this.tgNameIdMap.set(targetGroupName, createTgResponse.data.id)
+        alert('new Target Group is added into the database')
+      }
+    },
+    async addMentor (mentorName) {
+      this.form.mentor.push(mentorName)
+
+      var data = {
+        'fields': {
+          'Name': mentorName
+        }
+      }
+
+      var createMentorResponse = await VueAirtableService.createRecord('Mentor', data)
+      if (createMentorResponse.status === 200) {
+        this.mentorNameIdMap.set(mentorName, createMentorResponse.data.id)
+        alert('new Mentor is added into the database')
       }
     }
   }
