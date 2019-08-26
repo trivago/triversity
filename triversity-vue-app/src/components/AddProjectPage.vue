@@ -210,14 +210,50 @@ export default {
         this.mentorNameIdMap.set(record.fields.Name, record.id)
       })
     },
-    addUniversity (uniName) {
+    async addUniversity (uniName) {
+      this.form.university.push(uniName)
 
+      var data = {
+        'fields': {
+          'Name': uniName
+        }
+      }
+
+      var createUniResponse = await VueAirtableService.createRecord('University', data)
+      if (createUniResponse.status === 200) {
+        this.uniNameIdMap.set(uniName, createUniResponse.data.id)
+        alert('new University is added into the database')
+      }
     },
-    addTargetGroup (targetGroupName) {
+    async addTargetGroup (targetGroupName) {
+      this.form.targetGroup.push(targetGroupName)
 
+      var data = {
+        'fields': {
+          'Name': targetGroupName
+        }
+      }
+
+      var createTgResponse = await VueAirtableService.createRecord('TargetGroup', data)
+      if (createTgResponse.status === 200) {
+        this.tgNameIdMap.set(targetGroupName, createTgResponse.data.id)
+        alert('new Target Group is added into the database')
+      }
     },
-    addMentor (mentorName) {
+    async addMentor (mentorName) {
+      this.form.mentor.push(mentorName)
 
+      var data = {
+        'fields': {
+          'Name': mentorName
+        }
+      }
+
+      var createMentorResponse = await VueAirtableService.createRecord('Mentor', data)
+      if (createMentorResponse.status === 200) {
+        this.mentorNameIdMap.set(mentorName, createMentorResponse.data.id)
+        alert('new Mentor is added into the database')
+      }
     }
   }
 }
