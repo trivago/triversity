@@ -72,11 +72,9 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-import FilterAutocomplete from './FilterAutocomplete'
 
 export default {
   name: 'AddProjectPage',
-  components: {FilterAutocomplete},
   props: [
     'base'
   ],
