@@ -33,10 +33,7 @@
       <md-card>
         <span class="project__details__title">Target Group:</span>
         <div class="project__details__content" v-if="targetGroups">
-<!--          <multiselect v-model="targetGroups" :multiple="true" :taggable="true" ></multiselect>-->
-          <li v-for="targetGroup in targetGroups" :key="targetGroup">
-            {{ targetGroup }}
-          </li>
+          <md-chip v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
         </div>
         <p class="project__details__content" v-else>Not assigned</p>
       </md-card>
@@ -77,7 +74,6 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-
 export default {
   name: 'ProjectDetailPage',
   props: [

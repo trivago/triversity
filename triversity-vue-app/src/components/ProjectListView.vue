@@ -209,12 +209,8 @@ export default {
         'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
         'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
         ')'
-      this.searchTerms = query;
+      this.searchTerms = query
       this.getData()
-      // this.isLoading = true
-      // var response = await VueAirtableService.getRecords('Project', query)
-      // this.records = response.data.records
-      // this.isLoading = false
     },
     async getTargetGroup () {
       var response = await VueAirtableService.getRecords('TargetGroup')

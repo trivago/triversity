@@ -51,16 +51,9 @@
         ></b-form-textarea>
       </b-form-group>
       <b-form-group id="input-group-attachment" label="Attachments:" label-for="input-attachment">
-        <b-form-file
-          id="input-attachment"
-          multiple
-          v-model="form.attachment"
-          :state="Boolean(form.attachment)"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-        ></b-form-file>
+<!--        <b-button @click="callFilestackApi">Add attachments</b-button>-->
+        <md-chip v-for="index in form.attachment" :key="index">{{ index.filename }}</md-chip>
       </b-form-group>
-
       <div class="div-buttons">
         <b-button id="submit-button" type="submit" variant="primary">Submit</b-button>
         <b-button id="cancel-button" type="cancel" variant="danger" @click="$router.push({name: 'ProjectListView'})">Cancel</b-button>
@@ -92,10 +85,7 @@ export default {
         startDate: '',
         endDate: '',
         projectDescription: '',
-        attachment: [{
-          url: '',
-          fileName: ''
-        }]
+        attachment: []
       },
       uniNameIdMap: null,
       uniTable: [],
@@ -140,6 +130,7 @@ export default {
         this.uniTable = response.data.fields.uniTable
         this.mentorTable = response.data.fields.mentorTable
         this.tgTable = response.data.fields.tgTable
+        this.form.attachment = response.data.fields.Attachment
       }
     },
     async getTargetGroup () {
@@ -186,7 +177,8 @@ export default {
           'uniTable': this.uniTable,
           'startDate': this.form.startDate,
           'endDate': this.form.endDate,
-          'Project Description': this.form.projectDescription
+          'Project Description': this.form.projectDescription,
+          'Attachment': this.form.attachment
         }
       }
 
@@ -282,13 +274,9 @@ export default {
         alert('new Mentor is added into the database')
       }
     },
-    callFilestack () {
-      // const client = filestack.init('AWAjfQT3YRECutwPS8YCLz')
+    callFilestackApi () {
       const client = require('filestack-js').init('AWAjfQT3YRECutwPS8YCLz')
-
       let options = {
-        'displayMode': 'inline',
-        'container': '.picker-content',
         'maxFiles': 5,
         'accept': [
           'image/jpeg',
@@ -298,20 +286,18 @@ export default {
           'image/gif',
           'application/pdf'
         ],
-        'storeTo': {
-          'container': 'devportal-customers-assets',
-          'path': 'user-uploads/',
-          'region': 'us-east-1'
-        },
-        'fromSources': [
-          'local_file_system'
-        ],
-        'uploadInBackground': false
+        onUploadDone: file => {
+          for (let i = 0; i < file.filesUploaded.length; i++) {
+            let attachmentInfo = {
+              url: file.filesUploaded[i].url,
+              filename: file.filesUploaded[i].filename
+            }
+            this.form.attachment.push(attachmentInfo)
+          }
+        }
       }
 
       client.picker(options).open()
-      // picker = this.client.picker(options)
-      // picker.open()
     }
   }
 }
