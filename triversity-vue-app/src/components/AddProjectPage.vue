@@ -11,6 +11,12 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-target-group" label="Target Group:" label-for="input-target-group">
+        <div>
+          <multiselect v-model="form.targetGroup" tag-placeholder="Add this as new target group" placeholder="Search or add a new target group" :options="targetGroupOptions" :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
+        </div>
+      </b-form-group>
+
       <b-form-group id="input-group-university" label="University:" label-for="input-university">
         <div>
           <multiselect v-model="form.university" tag-placeholder="Add this as new University" placeholder="Search or add a new University" :options="universityOptions" :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
@@ -20,12 +26,6 @@
       <b-form-group id="input-group-mentor" label="Mentor Name:" label-for="input-mentor">
         <div>
           <multiselect v-model="form.mentor" tag-placeholder="Add this as new mentor" placeholder="Search or add a new mentor" :options="mentorOptions" :multiple="true" :taggable="true" @tag="addMentor"></multiselect>
-        </div>
-      </b-form-group>
-
-      <b-form-group id="input-group-target-group" label="Target Group:" label-for="input-target-group">
-        <div>
-          <multiselect v-model="form.targetGroup" tag-placeholder="Add this as new target group" placeholder="Search or add a new target group" :options="targetGroupOptions" :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
         </div>
       </b-form-group>
 

@@ -12,19 +12,19 @@
         <div class="w-100"></div>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
-                             :field="'Target Group'"
+                             :field="'tgTable'"
                              :options="filterTargetGroupOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
-                             :field="'University'"
+                             :field="'uniTable'"
                              :options="filterUniversityOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
-                             :field="'Mentor'"
+                             :field="'mentorTable'"
                              :options="filterMentorOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
@@ -165,8 +165,10 @@ export default {
     async getData () {
       var joinQueryForAllFilters = ''
       var arrayForQuery = []
+
       if (Object.keys(this.filters).length > 0) {
-        arrayForQuery.push(Object.values(this.filters).join())
+        // AND for selected filters
+        arrayForQuery.push('AND(' + Object.values(this.filters).join() + ')')
       }
       if (this.searchTerms !== '') {
         arrayForQuery.push(this.searchTerms)
@@ -185,9 +187,9 @@ export default {
         case 'SearchBar':
           this.searchAllRecordsWithInput(arg)
           break
-        case 'Target Group':
-        case 'University':
-        case 'Mentor':
+        case 'tgTable':
+        case 'uniTable':
+        case 'mentorTable':
           if (arg === 'remove') {
             this.removeFilter(title)
           } else {
@@ -202,19 +204,19 @@ export default {
       }
     },
     async searchAllRecordsWithInput (searchText) {
-      var query = 'OR(' +
-        'FIND(LOWER(\'' + searchText + '\'), LOWER({Name})),' +
-        'FIND(LOWER(\'' + searchText + '\'), LOWER({Target Group})),' +
-        'FIND(LOWER(\'' + searchText + '\'), LOWER({Mentor})),' +
-        'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
-        'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
-        ')'
-      this.searchTerms = query;
+      if (searchText !== '') {
+        var query = `OR(
+        FIND(LOWER('${searchText}'), LOWER(Name)),
+        FIND(LOWER('${searchText}'), LOWER(tgTable)),
+        FIND(LOWER('${searchText}'), LOWER(uniTable)),
+        FIND(LOWER('${searchText}'), LOWER(mentorTable)),
+        FIND(LOWER('${searchText}'), LOWER({Project Description}))
+        )`
+        this.searchTerms = query
+      } else {
+        this.searchTerms = ''
+      }
       this.getData()
-      // this.isLoading = true
-      // var response = await VueAirtableService.getRecords('Project', query)
-      // this.records = response.data.records
-      // this.isLoading = false
     },
     async getTargetGroup () {
       var response = await VueAirtableService.getRecords('TargetGroup')

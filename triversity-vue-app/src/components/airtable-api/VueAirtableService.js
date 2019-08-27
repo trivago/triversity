@@ -14,6 +14,8 @@ export default {
     return VueAirtable.get(url, { params: {
       filterByFormula: filter || ''
     }})
+    // var uni = 'RWTH'
+    // return VueAirtable.get(`https://api.airtable.com/v0/appkmRgOBmQGWlfoc/Project?filterByFormula=AND(FIND('${uni}', uniTable))`)
   },
   createRecord: function (table, data) {
     VueAirtable.defaults.headers['Content-Type'] = 'application/json'
