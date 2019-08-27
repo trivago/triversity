@@ -31,11 +31,27 @@
     </div>
     <div class="flex-direction--column">
       <md-card>
+        <span class="project__details__title">Target Group:</span>
+        <div class="project__details__content" v-if="targetGroups">
+<!--          <multiselect v-model="targetGroups" :multiple="true" :taggable="true" ></multiselect>-->
+          <li v-for="targetGroup in targetGroups" :key="targetGroup">
+            {{ targetGroup }}
+          </li>
+        </div>
+        <p class="project__details__content" v-else>Not assigned</p>
+      </md-card>
+
+      <md-card>
         <span class="project__details__title">Mentor:</span>
         <div class="project__details__content" v-if="mentors">
-          <li v-for="mentor in mentors" :key="mentor">
-            {{ mentor }}
-          </li>
+          <div v-for="mentor in mentors" :key="mentor.EmpNum">
+            <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
+              <b-card-text>
+                {{mentor.Email}}
+              </b-card-text>
+<!--              <b-link :href="mentor.Email" class="card-link">Email here</b-link>-->
+            </b-card>
+          </div>
         </div>
         <p class="project__details__content" v-else>Not assigned</p>
       </md-card>
@@ -43,22 +59,17 @@
       <md-card>
         <span class="project__details__title">University:</span>
         <div class="project__details__content" v-if="universities">
-          <li v-for="university in universities" :key="university">
-            {{ university }}
-          </li>
+          <div v-for="university in universities" :key="university.UniCode">
+            <b-card :title="university.Name" :sub-title="university.Address">
+              <b-card-text>
+                {{university.Email}}
+              </b-card-text>
+            </b-card>
+          </div>
         </div>
         <p class="project__details__content" v-else>Not assigned</p>
       </md-card>
 
-      <md-card>
-        <span class="project__details__title">Target Group:</span>
-        <div class="project__details__content" v-if="targetGroups">
-          <li v-for="targetGroup in targetGroups" :key="targetGroup">
-            {{ targetGroup }}
-          </li>
-        </div>
-        <p class="project__details__content" v-else>Not assigned</p>
-      </md-card>
     </div>
   </div>
 </div>
@@ -80,7 +91,9 @@ export default {
       projectTitle: '',
       targetGroups: [],
       mentors: [],
+      mentorIds: [],
       universities: [],
+      universityIds: [],
       projectDescription: '',
       startDate: '',
       endDate: '',
@@ -93,17 +106,34 @@ export default {
   },
   methods: {
     async getData (recordId) {
-      console.log('record Id : ' + recordId)
       var response = await VueAirtableService.getRecord('Project', recordId)
       if (response.status === 200) {
         this.projectTitle = response.data.fields.Name
         this.targetGroups = response.data.fields['TargetGroups']
-        this.mentors = response.data.fields['Mentors']
-        this.universities = response.data.fields['Universities']
+        this.mentorIds = response.data.fields['mentorTable']
+        this.universityIds = response.data.fields['uniTable']
         this.projectDescription = response.data.fields['Project Description']
         this.startDate = response.data.fields['startDate']
         this.endDate = response.data.fields['endDate']
         this.attachments = response.data.fields['Attachment']
+        this.getMentors()
+        this.getUniversities()
+      }
+    },
+    async getMentors () {
+      for (let i = 0; i < this.mentorIds.length; i++) {
+        var response = await VueAirtableService.getRecord('Mentor', this.mentorIds[i])
+        if (response.status === 200) {
+          this.mentors.push(response.data.fields)
+        }
+      }
+    },
+    async getUniversities () {
+      for (let i = 0; i < this.universityIds.length; i++) {
+        var response = await VueAirtableService.getRecord('University', this.universityIds[i])
+        if (response.status === 200) {
+          this.universities.push(response.data.fields)
+        }
       }
     }
   }
