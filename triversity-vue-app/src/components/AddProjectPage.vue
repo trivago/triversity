@@ -54,8 +54,8 @@
         <b-form-file
           id="input-attachment"
           multiple
-          v-model="form.files"
-          :state="Boolean(form.files)"
+          v-model="form.attachment"
+          :state="Boolean(form.attachment)"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here..."
         ></b-form-file>
@@ -92,7 +92,10 @@ export default {
         startDate: '',
         endDate: '',
         projectDescription: '',
-        files: []
+        attachment: [{
+          url: '',
+          fileName: ''
+        }]
       },
       uniNameIdMap: null,
       uniTable: [],

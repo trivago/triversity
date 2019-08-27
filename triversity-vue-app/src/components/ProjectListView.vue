@@ -83,7 +83,8 @@
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-                    <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
+                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
+                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'ProjectDetailPage', params: { recordId: record.id} })"><md-icon>visibility</md-icon></b-button>
               </div>
             </div>
           </md-list-item>
