@@ -58,7 +58,7 @@
                 <div class="project__detail__project-description">
                   <md-card>
                     <span class="project__details__title">Project Description:</span>
-                    <p class="project__details__content">{{ record.fields['Project Description'] }}</p>
+                    <p class="project__details__content" style="white-space: pre-wrap">{{ record.fields['Project Description'] }}</p>
                   </md-card>
                 </div>
                 <div class="flex-direction--column">
@@ -345,7 +345,9 @@ export default {
   }
   .flex-direction--row > div,
   .flex-direction--column > .md-card,
-  .card-body > div,
+  .card-body > div {
+    flex: 1;
+  }
   .flex-direction--row > .project__detail__project-description {
     flex: 2;
   }
@@ -402,5 +404,9 @@ export default {
   .md-button:active,
   .md-button:focus {
     outline: none;
+  }
+  .md-ripple {
+    padding: 0;
+    margin: 0
   }
 </style>

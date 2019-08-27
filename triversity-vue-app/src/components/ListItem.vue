@@ -86,4 +86,8 @@ export default {
   .list-item--text--center {
     text-align: center;
   }
+  .md-ripple {
+    padding: 0;
+    margin: 0
+  }
 </style>
