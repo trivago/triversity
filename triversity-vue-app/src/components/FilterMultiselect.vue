@@ -6,7 +6,9 @@
                  :multiple="multiple"
                  :taggable="taggable"
                  placeholder="select one filter"
-                 @input="sendToParent" @select="addToSelectedValue"></multiselect>
+                 @input="sendToParent"
+                 @select="addToSelectedValue"
+                 @remove="removeSelectedFilter"></multiselect>
   </div>
 </template>
 
@@ -28,7 +30,13 @@ export default {
     addToSelectedValue: function (selectedOption, id) {
       this.selectedValue = selectedOption
     },
+    removeSelectedFilter: function (removedOption, id) {
+      var messageTitle = 'messageFrom' + this.$options.name
+      this.$emit(messageTitle, this.field, 'remove')
+    },
     sendToParent: function (selectedOption, id) {
+      if (selectedOption.length < 1) return
+      console.log(selectedOption)
       this.selectedValue = selectedOption
 
       if (selectedOption.length > 1) {

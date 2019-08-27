@@ -175,7 +175,11 @@ export default {
         case 'Target Group':
         case 'University':
         case 'Mentor':
-          this.addFilter(title, arg)
+          if (arg === 'remove') {
+            this.removeFilter(title)
+          } else {
+            this.addFilter(title, arg)
+          }
           break
         case 'startDate':
         case 'endDate':
@@ -221,6 +225,10 @@ export default {
       } else {
         Object.assign(this.filters, { [field]: filter })
       }
+      this.getData()
+    },
+    removeFilter: function (field) {
+      delete this.filters[field]
       this.getData()
     },
     resetFilters: function () {
