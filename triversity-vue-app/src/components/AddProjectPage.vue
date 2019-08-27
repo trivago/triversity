@@ -29,6 +29,18 @@
         </div>
       </b-form-group>
 
+      <b-form-group id="input-group-startdate" label="Start Date:" label-for="input-startdate">
+        <div>
+          <b-form-input v-model="form.startDate" id="input-startdate" :type="'date'"></b-form-input>
+        </div>
+      </b-form-group>
+
+      <b-form-group id="input-group-enddate" label="End Date:" label-for="input-enddate">
+        <div>
+          <b-form-input v-model="form.endDate" id="input-enddate" :type="'date'"></b-form-input>
+        </div>
+      </b-form-group>
+
       <b-form-group id="input-group-project-description" label="Project Description:" label-for="input-project-description">
         <b-form-textarea
           id="input-project-description"
@@ -37,6 +49,16 @@
           rows="3"
           max-rows="6"
         ></b-form-textarea>
+      </b-form-group>
+      <b-form-group id="input-group-attachment" label="Attachments:" label-for="input-attachment">
+        <b-form-file
+          id="input-attachment"
+          multiple
+          v-model="form.attachment"
+          :state="Boolean(form.attachment)"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+        ></b-form-file>
       </b-form-group>
 
       <div class="div-buttons">
@@ -50,11 +72,9 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-import FilterAutocomplete from './FilterAutocomplete'
 
 export default {
   name: 'AddProjectPage',
-  components: {FilterAutocomplete},
   props: [
     'base'
   ],
@@ -69,7 +89,13 @@ export default {
         mentor: [],
         employeeNumber: [],
         targetGroup: [],
-        projectDescription: ''
+        startDate: '',
+        endDate: '',
+        projectDescription: '',
+        attachment: [{
+          url: '',
+          fileName: ''
+        }]
       },
       uniNameIdMap: null,
       uniTable: [],
@@ -108,6 +134,8 @@ export default {
         this.form.mentor = response.data.fields['Mentors']
         this.form.employeeNumber = response.data.fields['MentorsEmpNum']
         this.form.targetGroup = response.data.fields['TargetGroups']
+        this.form.startDate = response.data.fields['startDate']
+        this.form.endDate = response.data.fields['endDate']
         this.form.projectDescription = response.data.fields['Project Description']
         this.uniTable = response.data.fields.uniTable
         this.mentorTable = response.data.fields.mentorTable
@@ -156,9 +184,13 @@ export default {
           'tgTable': this.tgTable,
           'mentorTable': this.mentorTable,
           'uniTable': this.uniTable,
+          'startDate': this.form.startDate,
+          'endDate': this.form.endDate,
           'Project Description': this.form.projectDescription
         }
       }
+
+      console.log(data)
 
       var response
 
