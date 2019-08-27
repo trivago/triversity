@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="typo__label"><small>{{ field }}</small></label>
+    <label class="typo__label"><small>{{ fieldVisibleName[field] }}</small></label>
     <multiselect v-model="selectedValue"
                  :options="options"
                  :multiple="multiple"
@@ -24,6 +24,11 @@ export default {
   ],
   data: function () {
     return {
+      fieldVisibleName: {
+        'tgTable' : 'Target Group',
+        'uniTable' : 'University',
+        'mentorTable' : 'Mentor'
+      },
       selectedValue: null
     }
   },
