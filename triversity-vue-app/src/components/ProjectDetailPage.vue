@@ -16,15 +16,11 @@
 
       <md-card>
         <span class="project__details__title">Attachment:</span>
-        <div class="project__details__content" v-if="attachments !== undefined"
-             v-for="attachment in attachments" :key="attachment.id">
-          <md-button class="md-icon-button" v-if="attachment.type === 'application/pdf'">
-            <a v-bind:href="attachment.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
-            <md-tooltip md-direction="bottom">{{ attachment.filename }}</md-tooltip>
-          </md-button>
-          <md-button v-else>
-
-          </md-button>
+        <div class="project__details__content" v-if="attachments !== undefined">
+          <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
+            <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
+          </a>
+<!--          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>-->
         </div>
         <div class="project__details__content" v-else>No Attachment</div>
       </md-card>
@@ -33,10 +29,7 @@
       <md-card>
         <span class="project__details__title">Target Group:</span>
         <div class="project__details__content" v-if="targetGroups">
-<!--          <multiselect v-model="targetGroups" :multiple="true" :taggable="true" ></multiselect>-->
-          <li v-for="targetGroup in targetGroups" :key="targetGroup">
-            {{ targetGroup }}
-          </li>
+          <md-chip v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
         </div>
         <p class="project__details__content" v-else>Not assigned</p>
       </md-card>
@@ -49,7 +42,6 @@
               <b-card-text>
                 {{mentor.Email}}
               </b-card-text>
-<!--              <b-link :href="mentor.Email" class="card-link">Email here</b-link>-->
             </b-card>
           </div>
         </div>
@@ -77,7 +69,6 @@
 
 <script>
 import VueAirtableService from './airtable-api/VueAirtableService'
-
 export default {
   name: 'ProjectDetailPage',
   props: [
@@ -118,6 +109,7 @@ export default {
         this.attachments = response.data.fields['Attachment']
         this.getMentors()
         this.getUniversities()
+        console.log(this.attachments)
       }
     },
     async getMentors () {
@@ -192,5 +184,11 @@ export default {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+  .md-chip {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
   }
 </style>
