@@ -55,40 +55,50 @@
                       :date="{'start': record.fields['startDate'], 'end': record.fields['endDate']}"/>
             <div slot="md-expand" class="project__details flex-direction--column">
               <div class="flex-direction--row">
-                <div class="project__detail__project-description">
+                <div class="flex-direction--column project__detail__project-description">
                   <md-card>
                     <span class="project__details__title">Project Description:</span>
                     <p class="project__details__content" style="white-space: pre-wrap">{{ record.fields['Project Description'] }}</p>
                   </md-card>
-                </div>
-                <div class="flex-direction--column">
-                    <md-card>
-                      <span class="project__details__title">University:</span>
-                      <p class="project__details__content" v-if="record.fields['Universities']">
-                        {{ record.fields['Universities'].join(', ') }}
-                      </p>
-                      <p class="project__details__content" v-else>open</p>
-                    </md-card>
-                    <md-card>
-                      <span class="project__details__title">Mentor:</span>
-                      <p class="project__details__content" v-if="record.fields['Mentors']">
-                        {{ record.fields['Mentors'].join(', ') }}
-                      </p>
-                      <p class="project__details__content" v-else>open</p>
-                    </md-card>
-                  </div>
-                <div class="flex-direction--column" v-show="record.fields['Attachment']">
-                    <md-card>
-                      <span class="project__details__title">Attachment:</span>
-                      <div class="project__details__content"
-                           v-for="file in record.fields['Attachment']" :key="file.id">
-                        <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
+                  <md-card v-show="record.fields['Attachment']">
+                    <div class="project__details__content"
+                         v-for="file in record.fields['Attachment']" :key="file.id">
+                      <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
                         <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
                         <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>
                       </md-button>
-                      </div>
-                    </md-card>
-                  </div>
+                    </div>
+                  </md-card>
+                </div>
+                <div class="flex-direction--column">
+                  <md-card>
+                    <span class="project__details__title">Target group:</span>
+                    <div class="project__details__content" v-if="record.fields['TargetGroups']">
+                      <li v-for="targetGroup in record.fields['TargetGroups']" :key="targetGroup">
+                        {{ targetGroup }}
+                      </li>
+                    </div>
+                    <li class="project__details__content" v-else>Not assigned</li>
+                  </md-card>
+                  <md-card>
+                    <span class="project__details__title">University:</span>
+                    <div class="project__details__content" v-if="record.fields['Universities']">
+                      <li v-for="university in record.fields['Universities']" :key="university">
+                        {{ university }}
+                      </li>
+                    </div>
+                      <li class="project__details__content" v-else>Not assigned</li>
+                  </md-card>
+                  <md-card>
+                    <span class="project__details__title">Mentor:</span>
+                    <div class="project__details__content" v-if="record.fields['Mentors']">
+                      <li v-for="mentor in record.fields['Mentors']" :key="mentor">
+                        {{ mentor }}
+                      </li>
+                    </div>
+                    <li class="project__details__content" v-else>Not assigned</li>
+                  </md-card>
+                </div>
               </div>
               <div class="button-group">
                 <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
@@ -108,7 +118,6 @@ import VueAirtableService from './airtable-api/VueAirtableService'
 import SearchBar from './SearchBar'
 import Loading from './Loading'
 import NoResultsFound from './NoResultsFound'
-import FilterAutocomplete from './FilterAutocomplete'
 import ListItem from './ListItem'
 import FilterMultiselect from './FilterMultiselect'
 
@@ -120,7 +129,6 @@ export default {
   components: {
     FilterMultiselect,
     ListItem,
-    FilterAutocomplete,
     NoResultsFound,
     Loading,
     SearchBar
@@ -132,10 +140,8 @@ export default {
       records: [],
       expandSingle: true,
       isLoading: false,
+      searchTerms: '',
       // variables for filter
-      filterTextTargetGroup: '',
-      filterTextUniversity: '',
-      filterTextMentor: '',
       filters: {},
       filterTargetGroupOptions: [],
       filterUniversityOptions: [],
@@ -158,8 +164,15 @@ export default {
   methods: {
     async getData () {
       var joinQueryForAllFilters = ''
+      var arrayForQuery = []
       if (Object.keys(this.filters).length > 0) {
-        joinQueryForAllFilters = 'AND(' + Object.values(this.filters).join() + ')'
+        arrayForQuery.push(Object.values(this.filters).join())
+      }
+      if (this.searchTerms !== '') {
+        arrayForQuery.push(this.searchTerms)
+      }
+      if (arrayForQuery.length > 0) {
+        joinQueryForAllFilters = 'AND(' + arrayForQuery.join() + ')'
       }
       var sort = 'sort%5B0%5D%5Bfield%5D=' + this.sort.field + '&sort%5B0%5D%5Bdirection%5D=' + this.sort.direction
       this.isLoading = true
@@ -196,10 +209,12 @@ export default {
         'FIND(LOWER(\'' + searchText + '\'), LOWER({University})),' +
         'FIND(LOWER(\'' + searchText + '\'), LOWER({Project Description}))' +
         ')'
-      this.isLoading = true
-      var response = await VueAirtableService.getRecords('Project', query)
-      this.records = response.data.records
-      this.isLoading = false
+      this.searchTerms = query;
+      this.getData()
+      // this.isLoading = true
+      // var response = await VueAirtableService.getRecords('Project', query)
+      // this.records = response.data.records
+      // this.isLoading = false
     },
     async getTargetGroup () {
       var response = await VueAirtableService.getRecords('TargetGroup')
@@ -358,6 +373,9 @@ export default {
   }
   .flex-direction--row > .project__detail__project-description {
     flex: 2;
+  }
+  .flex-direction--column .project__detail__project-description > .md-card:first-child {
+    flex: 8
   }
   .md-card {
     box-sizing: border-box;
