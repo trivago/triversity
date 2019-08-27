@@ -16,15 +16,8 @@
 
       <md-card>
         <span class="project__details__title">Attachment:</span>
-        <div class="project__details__content" v-if="attachments !== undefined"
-             v-for="attachment in attachments" :key="attachment.id">
-          <md-button class="md-icon-button" v-if="attachment.type === 'application/pdf'">
-            <a v-bind:href="attachment.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
-            <md-tooltip md-direction="bottom">{{ attachment.filename }}</md-tooltip>
-          </md-button>
-          <md-button v-else>
-
-          </md-button>
+        <div class="project__details__content" v-if="attachments !== undefined">
+          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>
         </div>
         <div class="project__details__content" v-else>No Attachment</div>
       </md-card>
@@ -46,7 +39,6 @@
               <b-card-text>
                 {{mentor.Email}}
               </b-card-text>
-<!--              <b-link :href="mentor.Email" class="card-link">Email here</b-link>-->
             </b-card>
           </div>
         </div>
@@ -114,6 +106,7 @@ export default {
         this.attachments = response.data.fields['Attachment']
         this.getMentors()
         this.getUniversities()
+        console.log(this.attachments)
       }
     },
     async getMentors () {

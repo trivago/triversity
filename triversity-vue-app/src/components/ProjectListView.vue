@@ -61,13 +61,14 @@
                     <p class="project__details__content" style="white-space: pre-wrap">{{ record.fields['Project Description'] }}</p>
                   </md-card>
                   <md-card v-show="record.fields['Attachment']">
-                    <div class="project__details__content"
-                         v-for="file in record.fields['Attachment']" :key="file.id">
-                      <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
-                        <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
-                        <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>
-                      </md-button>
-                    </div>
+                    <md-chip v-for="file in record.fields['Attachment']" :key="file.id">{{ file.filename }}</md-chip>
+                    <!--                    <div class="project__details__content"-->
+<!--                         v-for="file in record.fields['Attachment']" :key="file.id">-->
+<!--                      <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">-->
+<!--                        <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>-->
+<!--                        <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>-->
+<!--                      </md-button>-->
+<!--                    </div>-->
                   </md-card>
                 </div>
                 <div class="flex-direction--column">

@@ -52,7 +52,7 @@
       </b-form-group>
       <b-form-group id="input-group-attachment" label="Attachments:" label-for="input-attachment">
 <!--        <b-button @click="callFilestackApi">Add attachments</b-button>-->
-        <md-chip v-for="index in form.attachment" :key="index">{{ index.filename }}</md-chip>
+        <md-chip v-for="file in form.attachment" :key="file.id">{{ file.filename }}</md-chip>
       </b-form-group>
       <div class="div-buttons">
         <b-button id="submit-button" type="submit" variant="primary">Submit</b-button>
@@ -181,8 +181,6 @@ export default {
           'Attachment': this.form.attachment
         }
       }
-
-      console.log(data)
 
       var response
 
