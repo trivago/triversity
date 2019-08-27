@@ -17,7 +17,10 @@
       <md-card>
         <span class="project__details__title">Attachment:</span>
         <div class="project__details__content" v-if="attachments !== undefined">
-          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>
+          <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
+            <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
+          </a>
+<!--          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>-->
         </div>
         <div class="project__details__content" v-else>No Attachment</div>
       </md-card>
@@ -181,5 +184,11 @@ export default {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+  .md-chip {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
   }
 </style>

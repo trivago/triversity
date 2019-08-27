@@ -61,41 +61,31 @@
                     <p class="project__details__content" style="white-space: pre-wrap">{{ record.fields['Project Description'] }}</p>
                   </md-card>
                   <md-card v-show="record.fields['Attachment']">
-                    <md-chip v-for="file in record.fields['Attachment']" :key="file.id">{{ file.filename }}</md-chip>
-                    <!--                    <div class="project__details__content"-->
-<!--                         v-for="file in record.fields['Attachment']" :key="file.id">-->
-<!--                      <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">-->
-<!--                        <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>-->
-<!--                        <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>-->
-<!--                      </md-button>-->
-<!--                    </div>-->
+                    <span class="project__details__title">Attachment:</span>
+                    <a v-for="file in record.fields['Attachment']" :key="file.id" v-bind:href="file.url">
+                      <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
+                    </a>
                   </md-card>
                 </div>
                 <div class="flex-direction--column">
                   <md-card>
                     <span class="project__details__title">Target group:</span>
                     <div class="project__details__content" v-if="record.fields['TargetGroups']">
-                      <li v-for="targetGroup in record.fields['TargetGroups']" :key="targetGroup">
-                        {{ targetGroup }}
-                      </li>
+                      <md-chip v-for="targetGroup in record.fields['TargetGroups']" :key="targetGroup">{{ targetGroup }}</md-chip>
                     </div>
                     <li class="project__details__content" v-else>Not assigned</li>
                   </md-card>
                   <md-card>
                     <span class="project__details__title">University:</span>
                     <div class="project__details__content" v-if="record.fields['Universities']">
-                      <li v-for="university in record.fields['Universities']" :key="university">
-                        {{ university }}
-                      </li>
+                      <md-chip v-for="university in record.fields['Universities']" :key="university">{{ university }}</md-chip>
                     </div>
                       <li class="project__details__content" v-else>Not assigned</li>
                   </md-card>
                   <md-card>
                     <span class="project__details__title">Mentor:</span>
                     <div class="project__details__content" v-if="record.fields['Mentors']">
-                      <li v-for="mentor in record.fields['Mentors']" :key="mentor">
-                        {{ mentor }}
-                      </li>
+                      <md-chip v-for="mentor in record.fields['Mentors']" :key="mentor">{{ mentor }}</md-chip>
                     </div>
                     <li class="project__details__content" v-else>Not assigned</li>
                   </md-card>
@@ -430,6 +420,13 @@ export default {
   }
   .md-ripple {
     padding: 0;
-    margin: 0
+    margin: 0;
   }
+  .md-chip {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-right:2px;
+  }
+
 </style>

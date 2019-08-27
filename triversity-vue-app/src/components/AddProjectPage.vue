@@ -336,5 +336,8 @@ export default {
     float: right;
     margin-left: 10px;
   }
-
+  .md-chip {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
 </style>
