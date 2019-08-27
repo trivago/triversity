@@ -164,17 +164,17 @@ export default {
       evt.preventDefault()
 
       this.uniTable = []
-      for (var i = 0; i < this.form.university.length; i++) {
+      for (let i = 0; i < this.form.university.length; i++) {
         this.uniTable.push(this.uniNameIdMap.get(this.form.university[i]))
       }
 
       this.tgTable = []
-      for (var j = 0; j < this.form.targetGroup.length; j++) {
+      for (let j = 0; j < this.form.targetGroup.length; j++) {
         this.tgTable.push(this.tgNameIdMap.get(this.form.targetGroup[j]))
       }
 
       this.mentorTable = []
-      for (var k = 0; k < this.form.mentor.length; k++) {
+      for (let k = 0; k < this.form.mentor.length; k++) {
         this.mentorTable.push(this.mentorNameIdMap.get(this.form.mentor[k]))
       }
 
