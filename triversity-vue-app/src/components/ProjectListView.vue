@@ -14,22 +14,27 @@
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
                              :field="'Target Group'"
                              :options="filterTargetGroupOptions"
-                             :multiple="true" :taggable="true"/>
+                             :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
                              :field="'University'"
                              :options="filterUniversityOptions"
-                             :multiple="true" :taggable="true"/>
+                             :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
                              :field="'Mentor'"
                              :options="filterMentorOptions"
-                             :multiple="true" :taggable="true"/>
+                             :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
-        <div class="w-100"></div>
-        <b-col class="text-sm-right" style="padding-top: .5em"><small> Reset filters</small><md-icon>clear</md-icon></b-col>
+<!--        <div class="w-100"></div>-->
+<!--        <b-col class="text-sm-right" style="padding-top: .5em">-->
+<!--          <md-button class="md-button-clean" @click="resetFilters">-->
+<!--            <small>Clear filters</small><md-icon class="md-dark" md-size="1em">clear</md-icon>-->
+<!--            <md-tooltip md-direction="bottom">Remove all selected filters</md-tooltip>-->
+<!--          </md-button>-->
+<!--        </b-col>-->
       </b-row>
     </b-container>
     <Loading v-if="isLoading" />
@@ -37,13 +42,17 @@
       <NoResultsFound v-if="records.length === 0"></NoResultsFound>
       <md-list v-else :md-expand-single="expandSingle">
         <md-list-item class="list--header">
-          <span class="md-list-item-text md-title">Projects</span>
+          <ListItem :header=true
+                    :title="'Project'"
+                    :date="{'start': 'Start date', 'end': 'End date'}"
+                    :sort="sort"
+                    @messageFromListItem="childMessageReceived"/>
         </md-list-item>
         <div v-for="record in records" :key="record.id">
           <md-list-item md-expand :md-expanded.sync="record._showDetails">
-            <ListItem :title="record.fields['Name']"
+            <ListItem :header=false
+                      :title="record.fields['Name']"
                       :date="{'start': record.fields['startDate'], 'end': record.fields['endDate']}"/>
-<!--            <span class="md-list-item-text">{{ record.fields['Name'] }}</span>-->
             <div slot="md-expand" class="project__details flex-direction--column">
               <div class="flex-direction--row">
                 <div class="project__detail__project-description">
@@ -74,9 +83,9 @@
                       <div class="project__details__content"
                            v-for="file in record.fields['Attachment']" :key="file.id">
                         <md-button class="md-icon-button" v-if="file.type === 'application/pdf'">
-                          <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
-                          <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>
-                        </md-button>
+                        <a v-bind:href="file.url" target="_blank"><md-icon class="md-dark">picture_as_pdf</md-icon></a>
+                        <md-tooltip md-direction="bottom">{{ file.filename }}</md-tooltip>
+                      </md-button>
                       </div>
                     </md-card>
                   </div>
@@ -127,12 +136,13 @@ export default {
       filterTextUniversity: '',
       filterTextMentor: '',
       filters: {},
-      filterQueries: [],
       filterTargetGroupOptions: [],
       filterUniversityOptions: [],
       filterMentorOptions: [],
-      sort: '',
-      taggedFilter: ''
+      sort: {
+        field: 'startDate',
+        direction: 'desc'
+      }
     }
   },
   mounted: function () {
@@ -150,13 +160,11 @@ export default {
       if (Object.keys(this.filters).length > 0) {
         joinQueryForAllFilters = 'AND(' + Object.values(this.filters).join() + ')'
       }
-      console.log(joinQueryForAllFilters)
-
+      var sort = 'sort%5B0%5D%5Bfield%5D=' + this.sort.field + '&sort%5B0%5D%5Bdirection%5D=' + this.sort.direction
       this.isLoading = true
-      var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, this.sort)
+      var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, sort)
       this.records = response.data.records
       this.isLoading = false
-      console.log(response)
     },
     childMessageReceived: function (title, arg) {
       switch (title) {
@@ -167,6 +175,11 @@ export default {
         case 'University':
         case 'Mentor':
           this.addFilter(title, arg)
+          break
+        case 'startDate':
+        case 'endDate':
+        case 'Name':
+          this.sortList(title, arg)
           break
       }
     },
@@ -207,6 +220,15 @@ export default {
       } else {
         Object.assign(this.filters, { [field]: filter })
       }
+      this.getData()
+    },
+    resetFilters: function () {
+      this.$refs.filterMultiSelect.resetFilters()
+      this.filters = {}
+      this.getData()
+    },
+    sortList: function (field, direction) {
+      this.sort = { field: field, direction: direction }
       this.getData()
     },
     onDelete: function (id) {
@@ -263,7 +285,7 @@ export default {
     background-color: #EBECED;
     width: 100%;
     height: fit-content;
-    padding: 0 10% .5em 10%;
+    padding: 0 10% 1em 10%;
   }
   .filter--box {
     box-sizing: border-box;
@@ -298,6 +320,10 @@ export default {
   }
   .list--header {
     border-bottom: 1px solid #EBECED;
+    top: 0;
+    position: sticky;
+    z-index: 10;
+    background-color: #ffffff;
   }
   .project__details {
     box-sizing: border-box;
@@ -371,5 +397,9 @@ export default {
     60% { transform: translate(-7px); }
     80% { transform: translate(3px); }
     100% { transform: translate(0px); }
+  }
+  .md-button:active,
+  .md-button:focus {
+    outline: none;
   }
 </style>

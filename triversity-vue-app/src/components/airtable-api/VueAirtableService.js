@@ -5,14 +5,15 @@ export default {
     return VueAirtable.get(`${table}/${recordId}`)
   },
   getRecords: function (table, filter, sort) {
-    return VueAirtable.get(
-      `${table}`, {
-        params: {
-          filterByFormula: filter || '',
-          sort: sort || ''
-        }
-      }
-    )
+    var url
+    if (sort !== undefined) {
+      url = `${table}?` + sort
+    } else {
+      url = `${table}`
+    }
+    return VueAirtable.get(url, { params: {
+      filterByFormula: filter || ''
+    }})
   },
   createRecord: function (table, data) {
     VueAirtable.defaults.headers['Content-Type'] = 'application/json'

@@ -3,10 +3,10 @@
     <label class="typo__label"><small>{{ field }}</small></label>
     <multiselect v-model="selectedValue"
                  :options="options"
-                 :multiple="true"
-                 :taggable="multiple"
+                 :multiple="multiple"
+                 :taggable="taggable"
                  placeholder="select one filter"
-                 @input="sendToParent"></multiselect>
+                 @input="sendToParent" @select="addToSelectedValue"></multiselect>
   </div>
 </template>
 
@@ -25,7 +25,12 @@ export default {
     }
   },
   methods: {
+    addToSelectedValue: function (selectedOption, id) {
+      this.selectedValue = selectedOption
+    },
     sendToParent: function (selectedOption, id) {
+      this.selectedValue = selectedOption
+
       if (selectedOption.length > 1) {
         selectedOption.splice(0, 1)
       }
@@ -33,6 +38,9 @@ export default {
       var messageTitle = 'messageFrom' + this.$options.name
       this.$emit(messageTitle, this.field, query)
       this.selectedValue = selectedOption
+    },
+    resetFilters: function () {
+      this.selectedValue = null
     }
   }
 }
