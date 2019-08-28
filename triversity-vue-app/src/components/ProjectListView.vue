@@ -1,9 +1,11 @@
 <template>
   <div class="listview-content">
     <div class="search-bar--container">
-      <div class="horizontal--layout">
-        <SearchBar @messageFromSearchBar="childMessageReceived" id="searchBar"></SearchBar>
-        <b-button @click="$router.push('AddProjectPage')" id="createButton">Create</b-button>
+      <div class="flex-direction--row">
+        <div class="flex--weight-8">
+          <SearchBar class="width-50" id="searchBar" @messageFromSearchBar="childMessageReceived"></SearchBar>
+        </div>
+        <b-button @click="$router.push('AddProjectPage')">Create</b-button>
       </div>
     </div>
     <b-container fluid class="filter-container">
@@ -28,13 +30,6 @@
                              :options="filterMentorOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
-<!--        <div class="w-100"></div>-->
-<!--        <b-col class="text-sm-right" style="padding-top: .5em">-->
-<!--          <md-button class="md-button-clean" @click="resetFilters">-->
-<!--            <small>Clear filters</small><md-icon class="md-dark" md-size="1em">clear</md-icon>-->
-<!--            <md-tooltip md-direction="bottom">Remove all selected filters</md-tooltip>-->
-<!--          </md-button>-->
-<!--        </b-col>-->
       </b-row>
     </b-container>
     <Loading v-if="isLoading" />
@@ -53,51 +48,9 @@
             <ListItem :header=false
                       :title="record.fields['Name']"
                       :date="{'start': record.fields['startDate'], 'end': record.fields['endDate']}"/>
-            <div slot="md-expand" class="project__details flex-direction--column">
-              <div class="flex-direction--row">
-                <div class="flex-direction--column project__detail__project-description">
-                  <md-card>
-                    <span class="project__details__title">Project Description:</span>
-                    <pre>
-                      <p class="project__details__content">{{ checkTextOverflowForDescription(record.fields['Project Description']) }}</p>
-                    </pre>
-                  </md-card>
-                  <md-card v-show="record.fields['Attachment']">
-                    <span class="project__details__title">Attachment:</span>
-                    <a v-for="file in record.fields['Attachment']" :key="file.id" v-bind:href="file.url">
-                      <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
-                    </a>
-                  </md-card>
-                </div>
-                <div class="flex-direction--column">
-                  <md-card>
-                    <span class="project__details__title">Target group:</span>
-                    <div class="project__details__content" v-if="record.fields['TargetGroups']">
-                      <md-chip v-for="targetGroup in record.fields['TargetGroups']" :key="targetGroup">{{ targetGroup }}</md-chip>
-                    </div>
-                    <li class="project__details__content" v-else>Not assigned</li>
-                  </md-card>
-                  <md-card>
-                    <span class="project__details__title">University:</span>
-                    <div class="project__details__content" v-if="record.fields['Universities']">
-                      <md-chip v-for="university in record.fields['Universities']" :key="university">{{ university }}</md-chip>
-                    </div>
-                      <li class="project__details__content" v-else>Not assigned</li>
-                  </md-card>
-                  <md-card>
-                    <span class="project__details__title">Mentor:</span>
-                    <div class="project__details__content" v-if="record.fields['Mentors']">
-                      <md-chip v-for="mentor in record.fields['Mentors']" :key="mentor">{{ mentor }}</md-chip>
-                    </div>
-                    <li class="project__details__content" v-else>Not assigned</li>
-                  </md-card>
-                </div>
-              </div>
-              <div class="button-group">
-                <b-button variant="link" class="text-decoration-none" @click="onDelete (record.id)"><md-icon>delete</md-icon></b-button>
-                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: record.id} })"><md-icon>edit</md-icon></b-button>
-                <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'ProjectDetailPage', params: { recordId: record.id} })"><md-icon>visibility</md-icon></b-button>
-              </div>
+            <div slot="md-expand">
+              <ProjectListExpandPreview :record = "record"
+                              @messageFromProjectPreview="childMessageReceived"></ProjectListExpandPreview>
             </div>
           </md-list-item>
         </div>
@@ -113,6 +66,7 @@ import Loading from './Loading'
 import NoResultsFound from './NoResultsFound'
 import ListItem from './ListItem'
 import FilterMultiselect from './FilterMultiselect'
+import ProjectListExpandPreview from './ProjectListExpandPreview'
 
 export default {
   name: 'ProjectListView',
@@ -120,6 +74,7 @@ export default {
     'base'
   ],
   components: {
+    ProjectListExpandPreview,
     FilterMultiselect,
     ListItem,
     NoResultsFound,
@@ -202,6 +157,9 @@ export default {
         case 'Name':
           this.sortList(title, arg)
           break
+        case 'deleteRecord':
+          this.onDelete(arg)
+          break
       }
     },
     async searchAllRecordsWithInput (searchText) {
@@ -249,11 +207,6 @@ export default {
       delete this.filters[field]
       this.getData()
     },
-    resetFilters: function () {
-      this.$refs.filterMultiSelect.resetFilters()
-      this.filters = {}
-      this.getData()
-    },
     sortList: function (field, direction) {
       this.sort = { field: field, direction: direction }
       this.getData()
@@ -271,12 +224,12 @@ export default {
     }
   }
 }
-
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .listview-content {
+    box-sizing: border-box;
     background-color: #f3f3f3;
   }
   .search-bar--container {
@@ -284,29 +237,11 @@ export default {
     width: 100%;
     height: fit-content;
     background-color: #EBECED;
-    padding-top: 1em;
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-  .horizontal--layout {
-    box-sizing: border-box;
-    display: flex;
-    width: 100%;
-    height: auto;
-    margin-bottom: 1%;
-    justify-content: space-between;
-  }
-  .input-group {
-    width: 50% !important;
-  }
-  #createButton {
-    align-self: flex-start;
+    padding: 1em 10% .5em 10%;
   }
   #searchBar {
-    width: 50%;
-    margin-right: 3%;
+    margin-right: 1em;
   }
-  /** Filter CSS **/
   .filter-container {
     box-sizing: border-box;
     background-color: #EBECED;
@@ -314,23 +249,6 @@ export default {
     height: fit-content;
     padding: 0 10% 1em 10%;
   }
-  .filter--box {
-    box-sizing: border-box;
-    padding: .5em 0 .5em .5em;
-    text-align: start;
-    font-size: 1rem;
-  }
-  .form-group {
-    padding: 0;
-    margin: 0;
-    text-align: start;
-  }
-  .filter-label {
-    padding: .2rem;
-    line-height: 1;
-  }
-
-  /** List CSS **/
   .list-container {
     box-sizing: border-box;
     width: 100%;
@@ -352,104 +270,4 @@ export default {
     z-index: 10;
     background-color: #ffffff;
   }
-  .project__details {
-    box-sizing: border-box;
-    width: inherit;
-    height: fit-content;
-    padding: .8em;
-    justify-content: space-between;
-    background-color: #EBECED;
-  }
-  .flex-direction--row {
-    display: flex;
-    flex-direction: row;
-  }
-  .flex-direction--column,
-  .card-body {
-    display: flex;
-    flex-direction: column;
-  }
-  .flex-direction--row > div,
-  .flex-direction--column > .md-card,
-  .card-body > div {
-    flex: 1;
-  }
-  .flex-direction--row > .project__detail__project-description {
-    flex: 2;
-  }
-  .flex-direction--column .project__detail__project-description > .md-card:first-child {
-    flex: 8
-  }
-  .md-card {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    box-shadow: none;
-    background-color: white;
-    border: 1px solid #00000022;
-    padding: .3rem .5rem;
-  }
-  .project__details__title {
-    box-sizing: border-box;
-    display: inline-flex;
-    font-size: .8rem;
-    color: #5d5d5d;
-    white-space: normal;
-  }
-  .project__details__content {
-    box-sizing: border-box;
-    font-size: .85rem;
-    font-weight: 500;
-    color: #212121;
-    white-space: normal;
-    padding: .2rem 0;
-  }
-  .button-group {
-    width: 100%;
-    background-color: white;
-    border: 1px solid #E1E1E1;
-  }
-  .button-group > button {
-    display: inline;
-    float: right;
-    color: #616161;
-  }
-  a, a:visited, a:focus, a:hover {
-    color: #616161;
-    text-decoration: none;
-  }
-  .shake-on-error /deep/ .md-duplicated {
-    animation-name: shake;
-    animation-duration: 0.5s;
-  }
-  @keyframes shake {
-    0% { transform: translate(15px); }
-    20% { transform: translate(-15px); }
-    40% { transform: translate(7px); }
-    60% { transform: translate(-7px); }
-    80% { transform: translate(3px); }
-    100% { transform: translate(0px); }
-  }
-  .md-button:active,
-  .md-button:focus {
-    outline: none;
-  }
-  .md-ripple {
-    padding: 0;
-    margin: 0;
-  }
-  .md-chip {
-    margin-bottom: 5px;
-    margin-top: 5px;
-    margin-left: 2px;
-    margin-right:2px;
-  }
-  pre {
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;       /* Internet Explorer 5.5+ */
-  }
-
 </style>

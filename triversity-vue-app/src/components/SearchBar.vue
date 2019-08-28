@@ -1,8 +1,7 @@
 <template>
-  <b-input-group class="input-group" >
+  <b-input-group>
     <b-form-input
       type="search"
-      id="filterInput"
       v-model="searchInputText"
       placeholder="Type to search">
     </b-form-input>
@@ -41,9 +40,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-group {
-  align-self: flex-start;
-}
-</style>

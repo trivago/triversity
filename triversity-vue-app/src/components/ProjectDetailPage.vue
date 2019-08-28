@@ -8,29 +8,29 @@
     <div class="flex-direction--column flex--weight-2">
       <md-card class="card--white flex--weight-8">
         <small>Project Description:</small>
-        <p class="detail__content">{{ projectDescription }}</p>
+        <p class="card__content">{{ projectDescription }}</p>
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>Attachment:</small>
-        <div class="detail__content" v-if="attachments !== undefined">
+        <div class="card__content" v-if="attachments !== undefined">
           <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
             <md-chip class="margin--5-2" md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
         </div>
-        <div class="detail__content" v-else>No Attachment</div>
+        <div class="card__content" v-else>No Attachment</div>
       </md-card>
     </div>
     <div class="flex-direction--column flex--weight-1">
       <md-card class="card--white flex--weight-1">
         <small>Target Group:</small>
-        <div class="detail__content" v-if="targetGroups">
+        <div class="card__content" v-if="targetGroups">
           <md-chip class="margin--5-2" v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
         </div>
-        <p class="detail__content" v-else>Not assigned</p>
+        <p class="card__content" v-else>Not assigned</p>
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>Mentor:</small>
-        <div class="detail__content" v-if="mentors">
+        <div class="card__content" v-if="mentors">
           <div v-for="mentor in mentors" :key="mentor.EmpNum">
             <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
               <b-card-text>
@@ -39,11 +39,11 @@
             </b-card>
           </div>
         </div>
-        <p class="detail__content" v-else>Not assigned</p>
+        <p class="card__content" v-else>Not assigned</p>
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>University:</small>
-        <div class="detail__content" v-if="universities">
+        <div class="card__content" v-if="universities">
           <div v-for="university in universities" :key="university.UniCode">
             <b-card :title="university.Name" :sub-title="university.Address">
               <b-card-text>
@@ -52,7 +52,7 @@
             </b-card>
           </div>
         </div>
-        <p class="detail__content" v-else>Not assigned</p>
+        <p class="card__content" v-else>Not assigned</p>
       </md-card>
     </div>
   </div>
@@ -125,13 +125,5 @@ export default {
     height: fit-content;
     text-align: start;
     padding: .5em 0;
-  }
-  .detail__content {
-    box-sizing: border-box;
-    font-size: .85rem;
-    font-weight: 500;
-    color: #212121;
-    white-space: pre-wrap;
-    padding: .2rem 0;
   }
 </style>
