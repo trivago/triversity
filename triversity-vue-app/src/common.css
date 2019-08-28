@@ -25,6 +25,27 @@
   padding: .3rem .5rem;
   text-align: start;
 }
+.card__content {
+  box-sizing: border-box;
+  font-size: .85rem;
+  font-weight: 500;
+  color: #212121;
+  white-space: pre-wrap;
+  padding: .2rem 0;
+}
 .md-chip.margin--5-2 {
   margin: 5px 2px;
+}
+.width-50 {
+  box-sizing: border-box;
+  align-self: flex-start;
+  width: 50%;
+}
+.md-button:active,
+.md-button:focus {
+  outline: none;
+}
+a, a:visited, a:focus, a:hover {
+  color: #616161;
+  text-decoration: none;
 }
