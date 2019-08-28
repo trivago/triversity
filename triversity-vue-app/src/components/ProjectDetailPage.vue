@@ -1,42 +1,36 @@
 <template>
-<div class="project-detail-container">
-  <div class="project__detail__project-title">
-    <md-card>
-      <span class="project__details__title">Project Title:</span>
-      <p><strong>{{ projectTitle }}</strong></p>
-    </md-card>
+<div class="detail-container">
+  <div class="detail__project__title">
+    <small>Project Title: </small><br/>
+    <h2><strong>{{ projectTitle }}</strong></h2>
   </div>
-
-  <div class="project__details flex-direction--row">
-    <div class="flex-direction--column project__detail__project-description">
-      <md-card>
-        <span class="project__details__title">Project Description:</span>
-        <p class="project__details__content" style="white-space: pre-wrap">{{ projectDescription }}</p>
+  <div class="flex-direction--row">
+    <div class="flex-direction--column flex--weight-2">
+      <md-card class="card--white flex--weight-8">
+        <small>Project Description:</small>
+        <p class="detail__content">{{ projectDescription }}</p>
       </md-card>
-
-      <md-card>
-        <span class="project__details__title">Attachment:</span>
-        <div class="project__details__content" v-if="attachments !== undefined">
+      <md-card class="card--white flex--weight-1">
+        <small>Attachment:</small>
+        <div class="detail__content" v-if="attachments !== undefined">
           <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
-            <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
+            <md-chip class="margin--5-2" md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
-<!--          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>-->
         </div>
-        <div class="project__details__content" v-else>No Attachment</div>
+        <div class="detail__content" v-else>No Attachment</div>
       </md-card>
     </div>
-    <div class="flex-direction--column">
-      <md-card>
-        <span class="project__details__title">Target Group:</span>
-        <div class="project__details__content" v-if="targetGroups">
-          <md-chip v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
+    <div class="flex-direction--column flex--weight-1">
+      <md-card class="card--white flex--weight-1">
+        <small>Target Group:</small>
+        <div class="detail__content" v-if="targetGroups">
+          <md-chip class="margin--5-2" v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
         </div>
-        <p class="project__details__content" v-else>Not assigned</p>
+        <p class="detail__content" v-else>Not assigned</p>
       </md-card>
-
-      <md-card>
-        <span class="project__details__title">Mentor:</span>
-        <div class="project__details__content" v-if="mentors">
+      <md-card class="card--white flex--weight-1">
+        <small>Mentor:</small>
+        <div class="detail__content" v-if="mentors">
           <div v-for="mentor in mentors" :key="mentor.EmpNum">
             <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
               <b-card-text>
@@ -45,12 +39,11 @@
             </b-card>
           </div>
         </div>
-        <p class="project__details__content" v-else>Not assigned</p>
+        <p class="detail__content" v-else>Not assigned</p>
       </md-card>
-
-      <md-card>
-        <span class="project__details__title">University:</span>
-        <div class="project__details__content" v-if="universities">
+      <md-card class="card--white flex--weight-1">
+        <small>University:</small>
+        <div class="detail__content" v-if="universities">
           <div v-for="university in universities" :key="university.UniCode">
             <b-card :title="university.Name" :sub-title="university.Address">
               <b-card-text>
@@ -59,9 +52,8 @@
             </b-card>
           </div>
         </div>
-        <p class="project__details__content" v-else>Not assigned</p>
+        <p class="detail__content" v-else>Not assigned</p>
       </md-card>
-
     </div>
   </div>
 </div>
@@ -71,13 +63,8 @@
 import VueAirtableService from './airtable-api/VueAirtableService'
 export default {
   name: 'ProjectDetailPage',
-  props: [
-    'base'
-  ],
   data () {
     return {
-      apiUrl: 'https://api.airtable.com/v0/',
-      apiKey: 'keyVzJe5qGOll341v',
       recordId: null,
       projectTitle: '',
       targetGroups: [],
@@ -133,62 +120,26 @@ export default {
 </script>
 
 <style scoped>
-  .project-detail-container {
+  .detail-container {
     box-sizing: border-box;
     width: 100%;
     height: fit-content;
     padding: 3em 10% 3em 10%;
     background-color: #f3f3f3;
   }
-  .flex-direction--row {
-    display: flex;
-    flex-direction: row;
-  }
-  .flex-direction--column {
-    display: flex;
-    flex-direction: column;
-  }
-  .flex-direction--row > div,
-  .flex-direction--column > .md-card {
-    flex: 1;
-  }
-  .flex-direction--row > div.project__detail__project-description {
-    flex: 2;
-  }
-  .md-card {
+  .detail__project__title {
     box-sizing: border-box;
     width: 100%;
-    height: 100%;
-    box-shadow: none;
-    background-color: white;
-    border: 1px solid #00000022;
-    padding: .3rem .5rem;
+    height: fit-content;
     text-align: start;
+    padding: .5em 0;
   }
-  .project__details__title {
-    box-sizing: border-box;
-    display: inline-flex;
-    font-size: .8rem;
-    color: #5d5d5d;
-    white-space: normal;
-  }
-  .project__details__content {
+  .detail__content {
     box-sizing: border-box;
     font-size: .85rem;
     font-weight: 500;
     color: #212121;
-    white-space: normal;
+    white-space: pre-wrap;
     padding: .2rem 0;
-  }
-  li {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .md-chip {
-    margin-bottom: 5px;
-    margin-top: 5px;
-    margin-left: 2px;
-    margin-right: 2px;
   }
 </style>

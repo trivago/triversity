@@ -58,7 +58,9 @@
                 <div class="flex-direction--column project__detail__project-description">
                   <md-card>
                     <span class="project__details__title">Project Description:</span>
-                    <p class="project__details__content" style="white-space: pre-wrap">{{ record.fields['Project Description'] }}</p>
+                    <pre>
+                      <p class="project__details__content">{{ checkTextOverflowForDescription(record.fields['Project Description']) }}</p>
+                    </pre>
                   </md-card>
                   <md-card v-show="record.fields['Attachment']">
                     <span class="project__details__title">Attachment:</span>
@@ -172,6 +174,14 @@ export default {
       var response = await VueAirtableService.getRecords('Project', joinQueryForAllFilters, sort)
       this.records = response.data.records
       this.isLoading = false
+    },
+    checkTextOverflowForDescription: function (text) {
+      if (text === undefined || text.length === 0) return
+
+      if (text.length > 300) {
+        return text.substring(0, 299) + '...'
+      }
+      return text
     },
     childMessageReceived: function (title, arg) {
       switch (title) {
@@ -433,6 +443,13 @@ export default {
     margin-top: 5px;
     margin-left: 2px;
     margin-right:2px;
+  }
+  pre {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
   }
 
 </style>
