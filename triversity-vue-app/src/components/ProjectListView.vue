@@ -65,7 +65,7 @@
                   <md-card v-show="record.fields['Attachment']">
                     <span class="project__details__title">Attachment:</span>
                     <a v-for="file in record.fields['Attachment']" :key="file.id" v-bind:href="file.url">
-                      <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
+                      <md-chip md-clickable >{{ file.filename }}</md-chip>
                     </a>
                   </md-card>
                 </div>

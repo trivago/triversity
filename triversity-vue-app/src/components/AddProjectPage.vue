@@ -51,8 +51,8 @@
         ></b-form-textarea>
       </b-form-group>
       <b-form-group id="input-group-attachment" label="Attachments:" label-for="input-attachment">
-<!--        <b-button @click="callFilestackApi">Add attachments</b-button>-->
-        <md-chip v-for="file in form.attachment" :key="file.id">{{ file.filename }}</md-chip>
+        <b-button @click="callFilestackApi">Add attachments</b-button>
+        <md-chip md-deletable @md-delete="onDeleteAttachment(file)" v-for="file in form.attachment" :key="file.id">{{ file.filename }}</md-chip>
       </b-form-group>
       <div class="div-buttons">
         <b-button id="submit-button" type="submit" variant="primary">Submit</b-button>
@@ -294,8 +294,12 @@ export default {
           }
         }
       }
-
       client.picker(options).open()
+    },
+    onDeleteAttachment (file) {
+      if (confirm('Do you really want to delete?')) {
+        this.form.attachment.pop(file)
+      }
     }
   }
 }
