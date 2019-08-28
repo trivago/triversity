@@ -20,7 +20,6 @@
           <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
             <md-chip md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
-<!--          <md-chip v-for="file in attachments" :key="file.id">{{ file.filename }}</md-chip>-->
         </div>
         <div class="project__details__content" v-else>No Attachment</div>
       </md-card>
@@ -107,24 +106,16 @@ export default {
         this.startDate = response.data.fields['startDate']
         this.endDate = response.data.fields['endDate']
         this.attachments = response.data.fields['Attachment']
-        this.getMentors()
-        this.getUniversities()
+        this.getTables('Mentor', this.mentorIds, this.mentors)
+        this.getTables('University', this.universityIds, this.universities)
         console.log(this.attachments)
       }
     },
-    async getMentors () {
-      for (let i = 0; i < this.mentorIds.length; i++) {
-        var response = await VueAirtableService.getRecord('Mentor', this.mentorIds[i])
+    async getTables (tableName, idArray, dataArray) {
+      for (let i = 0; i < idArray.length; i++) {
+        let response = await VueAirtableService.getRecord(tableName, idArray[i])
         if (response.status === 200) {
-          this.mentors.push(response.data.fields)
-        }
-      }
-    },
-    async getUniversities () {
-      for (let i = 0; i < this.universityIds.length; i++) {
-        var response = await VueAirtableService.getRecord('University', this.universityIds[i])
-        if (response.status === 200) {
-          this.universities.push(response.data.fields)
+          dataArray.push(response.data.fields)
         }
       }
     }
