@@ -50,7 +50,7 @@
                       :date="{'start': record.fields['startDate'], 'end': record.fields['endDate']}"/>
             <div slot="md-expand">
               <ProjectListExpandPreview :record = "record"
-                              @messageFromProjectPreview="childMessageReceived"></ProjectListExpandPreview>
+                              @messageFromProjectListExpandPreview="childMessageReceived"></ProjectListExpandPreview>
             </div>
           </md-list-item>
         </div>
@@ -158,6 +158,7 @@ export default {
           this.sortList(title, arg)
           break
         case 'deleteRecord':
+          console.log(arg)
           this.onDelete(arg)
           break
       }
