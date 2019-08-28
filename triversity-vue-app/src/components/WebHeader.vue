@@ -1,13 +1,20 @@
 <template>
-  <div class="header-container" @click="$router.push({name: 'ProjectListView'})">
+  <div class="header-container" @click="goHome">
     <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span><br>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'WebHeader'
+  name: 'WebHeader',
+  methods: {
+    goHome () {
+      this.$router.push({name: 'ProjectListView'})
+      window.location.reload()
+    }
+  }
 }
+
 </script>
 
 <style scoped>

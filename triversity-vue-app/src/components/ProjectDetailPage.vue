@@ -3,6 +3,10 @@
   <div class="detail__project__title">
     <small>Project Title: </small><br/>
     <h2><strong>{{ projectTitle }}</strong></h2>
+    <div class="button-group">
+      <b-button variant="link" class="text-decoration-none" @click="onDelete(recordId)"><md-icon>delete</md-icon></b-button>
+      <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: recordId} })"><md-icon>edit</md-icon></b-button>
+    </div>
   </div>
   <div class="flex-direction--row">
     <div class="flex-direction--column flex--weight-2">
@@ -18,7 +22,7 @@
             <md-chip class="margin--5-2" md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
         </div>
-        <div class="card__content" v-else>No Attachment</div>
+        <div class="card__content" v-else>No attachment</div>
       </md-card>
     </div>
     <div class="flex-direction--column flex--weight-1">
@@ -110,6 +114,18 @@ export default {
           dataArray.push(response.data.fields)
         }
       }
+    },
+    onDelete: function (id) {
+      if (confirm('Do you really want to delete?')) {
+        VueAirtableService.deleteRecord('Project', id).then((res) => {
+          alert('The record is deleted.')
+          this.$router.push({name: 'ProjectListView'})
+        }).catch(error => {
+          alert('Error: ' + error)
+          console.log('Error in onDelete: ' + error)
+          this.$router.push({name: 'ProjectListView'})
+        })
+      }
     }
   }
 }
@@ -129,5 +145,12 @@ export default {
     height: fit-content;
     text-align: start;
     padding: .5em 0;
+  }
+  .button-group {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
   }
 </style>
