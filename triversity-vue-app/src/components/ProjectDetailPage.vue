@@ -13,7 +13,7 @@
       <md-card class="card--white flex--weight-1">
         <small>Attachment:</small>
         <div class="card__content" v-if="attachments !== undefined">
-          <a v-for="file in attachments" :key="file.id" v-bind:href="file.url">
+          <a v-for="file in attachments" :key="file.id" v-bind:href="file.url" target="_blank">
             <md-chip class="margin--5-2" md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
         </div>
@@ -28,7 +28,7 @@
         </div>
         <p class="card__content" v-else>Not assigned</p>
       </md-card>
-      <md-card class="card--white flex--weight-1">
+      <md-card class="card--white flex--weight-2">
         <small>Mentor:</small>
         <div class="card__content" v-if="mentors">
           <div v-for="mentor in mentors" :key="mentor.EmpNum">
@@ -41,7 +41,7 @@
         </div>
         <p class="card__content" v-else>Not assigned</p>
       </md-card>
-      <md-card class="card--white flex--weight-1">
+      <md-card class="card--white flex--weight-2">
         <small>University:</small>
         <div class="card__content" v-if="universities">
           <div v-for="university in universities" :key="university.UniCode">

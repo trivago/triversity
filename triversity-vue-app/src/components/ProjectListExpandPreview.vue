@@ -8,7 +8,7 @@
         </md-card>
         <md-card class="card--white flex--weight-1" v-show="record.fields['Attachment']">
           <small>Attachment:</small>
-          <a v-for="file in record.fields['Attachment']" :key="file.id" v-bind:href="file.url">
+          <a v-for="file in record.fields['Attachment']" :key="file.id" v-bind:href="file.url" target="_blank">
             <md-chip class="margin--5-2" md-clickable md-click="" >{{ file.filename }}</md-chip>
           </a>
         </md-card>
