@@ -64,40 +64,40 @@ label.typo__label {
   padding: 0;
 }
 
-.multiselect.TargetGroups >>> .multiselect__tags span.multiselect__tag,
-.multiselect.TargetGroups >>> .multiselect__tags i.multiselect__tag-icon:hover {
+.multiselect.tgTable >>> .multiselect__tags span.multiselect__tag,
+.multiselect.tgTable >>> .multiselect__tags i.multiselect__tag-icon:hover {
   background: #007FAF;
 }
-.multiselect.Universities >>> .multiselect__tags span.multiselect__tag,
-.multiselect.Universities >>> .multiselect__tags i.multiselect__tag-icon:hover {
+.multiselect.uniTable >>> .multiselect__tags span.multiselect__tag,
+.multiselect.uniTable >>> .multiselect__tags i.multiselect__tag-icon:hover {
   background: #F48F00;
 }
-.multiselect.Mentors >>> .multiselect__tags span.multiselect__tag,
-.multiselect.Mentors >>> .multiselect__tags i.multiselect__tag-icon:hover {
+.multiselect.mentorTable >>> .multiselect__tags span.multiselect__tag,
+.multiselect.mentorTable >>> .multiselect__tags i.multiselect__tag-icon:hover {
   background: #CA4A38;
 }
 
-.multiselect.TargetGroups >>> .multiselect__option.multiselect__option--highlight,
-.multiselect.TargetGroups >>> .multiselect__option.multiselect__option--highlight:after,
-.multiselect.Universities >>> .multiselect__option.multiselect__option--highlight,
-.multiselect.Universities >>> .multiselect__option.multiselect__option--highlight:after,
-.multiselect.Mentors >>> .multiselect__option.multiselect__option--highlight,
-.multiselect.Mentors >>> .multiselect__option.multiselect__option--highlight:after {
+.multiselect.tgTable >>> .multiselect__option.multiselect__option--highlight,
+.multiselect.tgTable >>> .multiselect__option.multiselect__option--highlight:after,
+.multiselect.uniTable >>> .multiselect__option.multiselect__option--highlight,
+.multiselect.uniTable >>> .multiselect__option.multiselect__option--highlight:after,
+.multiselect.mentorTable >>> .multiselect__option.multiselect__option--highlight,
+.multiselect.mentorTable >>> .multiselect__option.multiselect__option--highlight:after {
   background: #808080;
 }
 
-.multiselect.TargetGroups >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
-.multiselect.TargetGroups >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after,
-.multiselect.Universities >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
-.multiselect.Universities >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after,
-.multiselect.Mentors >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
-.multiselect.Mentors >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after {
+.multiselect.tgTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
+.multiselect.tgTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after,
+.multiselect.uniTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
+.multiselect.uniTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after,
+.multiselect.mentorTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight,
+.multiselect.mentorTable >>> .multiselect__option.multiselect__option--selected.multiselect__option--highlight:after {
   background: #FF6A6A;
 }
 
-.multiselect.TargetGroups >>> .multiselect__tag-icon::after,
-.multiselect.Universities >>> .multiselect__tag-icon::after,
-.multiselect.Mentors >>> .multiselect__tag-icon::after {
+.multiselect.tgTable >>> .multiselect__tag-icon::after,
+.multiselect.uniTable >>> .multiselect__tag-icon::after,
+.multiselect.mentorTable >>> .multiselect__tag-icon::after {
   color: #fff;
 }
 </style>
