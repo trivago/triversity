@@ -1,12 +1,20 @@
 <template>
-  <div class="header-container" @click="$router.push({name: 'ProjectListView'})">
-    <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span><br>
+  <div class="header-container">
+    <div class="align-content-center triversity" @click="goHome">
+      <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'WebHeader'
+  name: 'WebHeader',
+  methods: {
+    goHome: function () {
+      this.$router.push({name: 'ProjectListView'})
+      window.location.reload()
+    }
+  }
 }
 </script>
 
@@ -16,6 +24,13 @@ export default {
     background-color: white;
     padding: 2em;
     height: auto;
+    width: 100%
+  }
+  .triversity {
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+    margin: auto;
   }
   span {
     margin: 0;
