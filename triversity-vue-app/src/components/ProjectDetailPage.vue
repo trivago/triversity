@@ -8,7 +8,8 @@
     <div class="flex-direction--column flex--weight-2">
       <md-card class="card--white flex--weight-8">
         <small>Project Description:</small>
-        <p class="detail__content">{{ projectDescription }}</p>
+        <p class="detail__content" v-if="projectDescription">{{ projectDescription }}</p>
+        <div class="detail__content" v-else>No Project Description</div>
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>Attachment:</small>
@@ -30,7 +31,7 @@
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>Mentor:</small>
-        <div class="detail__content" v-if="mentors">
+        <div class="detail__content" v-if="mentorIds">
           <div v-for="mentor in mentors" :key="mentor.EmpNum">
             <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
               <b-card-text>
@@ -43,7 +44,7 @@
       </md-card>
       <md-card class="card--white flex--weight-1">
         <small>University:</small>
-        <div class="detail__content" v-if="universities">
+        <div class="detail__content" v-if="universityIds">
           <div v-for="university in universities" :key="university.UniCode">
             <b-card :title="university.Name" :sub-title="university.Address">
               <b-card-text>
@@ -94,9 +95,12 @@ export default {
         this.startDate = response.data.fields['startDate']
         this.endDate = response.data.fields['endDate']
         this.attachments = response.data.fields['Attachment']
-        this.getTables('Mentor', this.mentorIds, this.mentors)
-        this.getTables('University', this.universityIds, this.universities)
-        console.log(this.attachments)
+        if (this.mentorIds) {
+          this.getTables('Mentor', this.mentorIds, this.mentors)
+        }
+        if (this.universityIds) {
+          this.getTables('University', this.universityIds, this.universities)
+        }
       }
     },
     async getTables (tableName, idArray, dataArray) {
