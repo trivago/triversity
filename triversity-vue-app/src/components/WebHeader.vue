@@ -1,7 +1,7 @@
 <template>
   <div class="header-container">
     <div class="align-content-center triversity" @click="goHome">
-      <span id="title--blue">tri</span><span id="title--orange">ver</span><span id="title--red">sity</span>
+      <span class="color--trivago-blue">tri</span><span class="color--trivago-orange">ver</span><span class="color--trivago-red">sity</span>
     </div>
   </div>
 </template>
@@ -38,14 +38,5 @@ export default {
     padding: 0;
     font-size: 2rem;
     font-weight: 900;
-  }
-  #title--blue {
-    color: #007FAF;
-  }
-  #title--orange {
-    color: #F48F00;
-  }
-  #title--red {
-    color: #CA4A38;
   }
 </style>

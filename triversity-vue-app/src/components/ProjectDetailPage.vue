@@ -2,10 +2,14 @@
 <div class="detail-container">
   <div class="detail__project__title">
     <small>Project Title: </small><br/>
-    <h2><strong>{{ projectTitle }}</strong></h2>
+    <h2 class="no-margin"><strong>{{ projectTitle }}</strong></h2>
     <div class="button-group">
-      <b-button variant="link" class="text-decoration-none" @click="onDelete(recordId)"><md-icon>delete</md-icon></b-button>
-      <b-button variant="link" class="text-decoration-none" @click="$router.push({ name: 'EditProjectPage', params: { recordId: recordId} })"><md-icon>edit</md-icon></b-button>
+      <b-button variant="link" class="text-decoration-none no-padding"
+                v-b-tooltip.hover title="Edit"
+                @click="$router.push({ name: 'EditProjectPage', params: { recordId: recordId} })"><md-icon>edit</md-icon></b-button>
+      <b-button variant="link" class="text-decoration-none no-padding" style="margin-left: 1em"
+                v-b-tooltip.hover title="Delete"
+                @click="onDelete(recordId)"><md-icon>delete</md-icon></b-button>
     </div>
   </div>
   <div class="flex-direction--row">
@@ -27,14 +31,20 @@
     </div>
     <div class="flex-direction--column flex--weight-1">
       <md-card class="card--white flex--weight-1">
-        <small>Target Group:</small>
+        <small>
+          <md-icon v-if="targetGroups" class="icon--size-sm color--trivago-blue">fiber_manual_record</md-icon>
+          <md-icon v-else class="icon--size-sm color--not-assigned">fiber_manual_record</md-icon>Target group:
+        </small>
         <div class="card__content" v-if="targetGroups">
           <md-chip class="margin--5-2" v-for="targetGroup in targetGroups" :key="targetGroup">{{ targetGroup }}</md-chip>
         </div>
         <p class="card__content" v-else>Not assigned</p>
       </md-card>
       <md-card class="card--white flex--weight-2">
-        <small>Mentor:</small>
+        <small>
+          <md-icon v-if="mentorIds" class="icon--size-sm color--trivago-orange">fiber_manual_record</md-icon>
+          <md-icon v-else class="icon--size-sm color--not-assigned">fiber_manual_record</md-icon>Mentor:
+        </small>
         <div class="card__content" v-if="mentorIds">
           <div v-for="mentor in mentors" :key="mentor.EmpNum">
             <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
@@ -47,7 +57,10 @@
         <p class="card__content" v-else>Not assigned</p>
       </md-card>
       <md-card class="card--white flex--weight-2">
-        <small>University:</small>
+        <small>
+          <md-icon v-if="universityIds" class="icon--size-sm color--trivago-red">fiber_manual_record</md-icon>
+          <md-icon v-else class="icon--size-sm color--not-assigned">fiber_manual_record</md-icon>University:
+        </small>
         <div class="card__content" v-if="universityIds">
           <div v-for="university in universities" :key="university.UniCode">
             <b-card :title="university.Name" :sub-title="university.Address">

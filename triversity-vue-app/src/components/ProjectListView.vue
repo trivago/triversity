@@ -20,14 +20,14 @@
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
-                             :field="'uniTable'"
-                             :options="filterUniversityOptions"
+                             :field="'mentorTable'"
+                             :options="filterMentorOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
         <b-col>
           <FilterMultiselect @messageFromFilterMultiselect="childMessageReceived"
-                             :field="'mentorTable'"
-                             :options="filterMentorOptions"
+                             :field="'uniTable'"
+                             :options="filterUniversityOptions"
                              :multiple="true" :taggable="true" ref="filterMultiSelect"/>
         </b-col>
       </b-row>

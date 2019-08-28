@@ -1,3 +1,31 @@
+.color--trivago-blue,
+.md-icon .color--trivago-blue {
+  color: #007FAF !important;
+}
+.color--trivago-orange,
+.md-icon .color--trivago-orange {
+  color: #F48F00 !important;
+}
+.color--trivago-red,
+.md-icon .color--trivago-red {
+  color: #CA4A38 !important;
+}
+.color--not-assigned,
+.md-icon .color--not-assigned {
+  color: #b9b9b9 !important;
+}
+.bg-color--trivago-blue {
+  background-color: #007FAF;
+  color: white;
+}
+.bg-color--trivago-orange {
+  background-color: #F48F00;
+  color: white;
+}
+.bg-color--trivago-red {
+  background-color: #CA4A38;
+  color: white;
+}
 .flex-direction--row {
   display: flex;
   flex-direction: row;
@@ -49,4 +77,15 @@ a, a:visited, a:focus, a:hover {
   color: #616161;
   text-decoration: none;
 }
-
+.no-margin {
+  margin: 0;
+}
+.no-padding {
+  padding: 0
+}
+.md-icon.md-icon-font.icon--size-sm {
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  font-size: 1em !important;
+}

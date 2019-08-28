@@ -75,11 +75,11 @@ label.typo__label {
 }
 .multiselect.uniTable >>> .multiselect__tags span.multiselect__tag,
 .multiselect.uniTable >>> .multiselect__tags i.multiselect__tag-icon:hover {
-  background: #F48F00;
+  background: #CA4A38;
 }
 .multiselect.mentorTable >>> .multiselect__tags span.multiselect__tag,
 .multiselect.mentorTable >>> .multiselect__tags i.multiselect__tag-icon:hover {
-  background: #CA4A38;
+  background: #F48F00;
 }
 
 .multiselect.tgTable >>> .multiselect__option.multiselect__option--highlight,
