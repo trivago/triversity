@@ -1,6 +1,6 @@
 <template>
   <footer class="d-flex justify-content-center mt-auto footer-container">
-    <span>Trivago University Management Tool</span>
+    <span>Trivago University Project Management Tool</span>
   </footer>
 </template>
 

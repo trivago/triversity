@@ -1,8 +1,12 @@
 <template>
   <div class="create-form--container">
-    <span>Create a Project</span>
+    <span v-if="recordId">Edit the project</span>
+    <span v-else>Create a project</span>
     <b-form @submit="onSubmit" v-if="show" class="project-form" >
-      <b-form-group id="input-group-project-title" label="Project Title:" label-for="input-project-title">
+      <b-form-group id="input-group-project-title"
+                    label="Project Title:"
+                    label-for="input-project-title"
+                    label-size="sm">
         <b-form-input
           id="input-project-title"
           v-model="form.projectTitle"
@@ -11,37 +15,67 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-target-group" label="Target Group:" label-for="input-target-group">
+      <b-form-group id="input-group-target-group"
+                    label="Target group:"
+                    label-for="input-target-group"
+                    label-size="sm">
         <div>
-          <multiselect v-model="form.targetGroup" tag-placeholder="Add this as new target group" placeholder="Search or add a new target group" :options="targetGroupOptions" :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
+          <multiselect v-model="form.targetGroup"
+                       tag-placeholder="Add this as new target group"
+                       placeholder="Search or add a new target group"
+                       :options="targetGroupOptions"
+                       :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
         </div>
       </b-form-group>
 
-      <b-form-group id="input-group-university" label="University:" label-for="input-university">
+      <b-form-group id="input-group-university"
+                    label="University:"
+                    label-for="input-university"
+                    label-size="sm">
         <div>
-          <multiselect v-model="form.university" tag-placeholder="Add this as new University" placeholder="Search or add a new University" :options="universityOptions" :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
+          <multiselect v-model="form.university"
+                       tag-placeholder="Add this as new University"
+                       placeholder="Search or add a new University"
+                       :options="universityOptions"
+                       :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
         </div>
       </b-form-group>
 
-      <b-form-group id="input-group-mentor" label="Mentor Name:" label-for="input-mentor">
+      <b-form-group id="input-group-mentor"
+                    label="Mentor:"
+                    label-for="input-mentor"
+                    label-size="sm">
         <div>
-          <multiselect v-model="form.mentor" tag-placeholder="Add this as new mentor" placeholder="Search or add a new mentor" :options="mentorOptions" :multiple="true" :taggable="true" @tag="addMentor"></multiselect>
+          <multiselect v-model="form.mentor"
+                       tag-placeholder="Add this as new mentor"
+                       placeholder="Search or add a new mentor"
+                       :options="mentorOptions"
+                       :multiple="true" :taggable="true" @tag="addMentor"></multiselect>
         </div>
       </b-form-group>
 
-      <b-form-group id="input-group-startdate" label="Start Date:" label-for="input-startdate">
+      <b-form-group id="input-group-startdate"
+                    label="Start date:"
+                    label-for="input-startdate"
+                    label-size="sm">
         <div>
           <b-form-input v-model="form.startDate" id="input-startdate" :type="'date'"></b-form-input>
         </div>
       </b-form-group>
 
-      <b-form-group id="input-group-enddate" label="End Date:" label-for="input-enddate">
+      <b-form-group id="input-group-enddate"
+                    label="End date:"
+                    label-for="input-enddate"
+                    label-size="sm">
         <div>
           <b-form-input v-model="form.endDate" id="input-enddate" :type="'date'"></b-form-input>
         </div>
       </b-form-group>
 
-      <b-form-group id="input-group-project-description" label="Project Description:" label-for="input-project-description">
+      <b-form-group id="input-group-project-description"
+                    label="Project description:"
+                    label-for="input-project-description"
+                    label-size="sm">
         <b-form-textarea
           id="input-project-description"
           v-model="form.projectDescription"
@@ -50,8 +84,11 @@
           max-rows="6"
         ></b-form-textarea>
       </b-form-group>
-      <b-form-group id="input-group-attachment" label="Attachments:" label-for="input-attachment">
-        <b-button @click="callFilestackApi">Add attachments</b-button>
+      <b-form-group id="input-group-attachment"
+                    label="Attachments:"
+                    label-for="input-attachment"
+                    label-size="sm">
+        <b-button @click="callFilestackApi">Add an attachment</b-button>
         <md-chip md-deletable @md-delete="onDeleteAttachment(file)" v-for="file in form.attachment" :key="file.id">{{ file.filename }}</md-chip>
       </b-form-group>
       <div class="div-buttons">
@@ -339,9 +376,5 @@ export default {
   .div-buttons > button {
     float: right;
     margin-left: 10px;
-  }
-  .md-chip {
-    margin-bottom: 5px;
-    margin-top: 5px;
   }
 </style>
