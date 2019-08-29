@@ -21,36 +21,37 @@
                     label-size="sm">
         <div>
           <multiselect v-model="form.targetGroup"
+                       :class="'tgTable'"
                        tag-placeholder="Add this as new target group"
                        placeholder="Search or add a new target group"
                        :options="targetGroupOptions"
                        :multiple="true" :taggable="true" @tag="addTargetGroup"></multiselect>
         </div>
       </b-form-group>
-
-      <b-form-group id="input-group-university"
-                    label="University:"
-                    label-for="input-university"
-                    label-size="sm">
-        <div>
-          <multiselect v-model="form.university"
-                       tag-placeholder="Add this as new University"
-                       placeholder="Search or add a new University"
-                       :options="universityOptions"
-                       :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
-        </div>
-      </b-form-group>
-
       <b-form-group id="input-group-mentor"
                     label="Mentor:"
                     label-for="input-mentor"
                     label-size="sm">
         <div>
           <multiselect v-model="form.mentor"
+                       :class="'mentorTable'"
                        tag-placeholder="Add this as new mentor"
                        placeholder="Search or add a new mentor"
                        :options="mentorOptions"
                        :multiple="true" :taggable="true" @tag="addMentor"></multiselect>
+        </div>
+      </b-form-group>
+      <b-form-group id="input-group-university"
+                    label="University:"
+                    label-for="input-university"
+                    label-size="sm">
+        <div>
+          <multiselect v-model="form.university"
+                       :class="'uniTable'"
+                       tag-placeholder="Add this as new University"
+                       placeholder="Search or add a new University"
+                       :options="universityOptions"
+                       :multiple="true" :taggable="true" @tag="addUniversity"></multiselect>
         </div>
       </b-form-group>
 
@@ -143,10 +144,7 @@ export default {
     this.getMentors()
     this.recordId = this.$route.params.recordId
     if (this.recordId != null) {
-      console.log('Edit Mode')
       this.fillInputForm(this.recordId)
-    } else {
-      console.log('Create Mode')
     }
   },
   methods: {
@@ -241,12 +239,10 @@ export default {
       }
     },
     async mapData () {
-      // this.uniIdNameMap = new Map()
       this.uniNameIdMap = new Map()
       var uniResponse = await VueAirtableService.getRecords('University')
 
       uniResponse.data.records.forEach((record) => {
-        // this.uniIdNameMap.set(record.id, record.fields.Name)
         this.uniNameIdMap.set(record.fields.Name, record.id)
       })
 
@@ -376,5 +372,24 @@ export default {
   .div-buttons > button {
     float: right;
     margin-left: 10px;
+  }
+  .tgTable .multiselect__tags .multiselect__tags-wrap span.multiselect__tag,
+  .tgTable .multiselect__tags .multiselect__tags-wrap i.multiselect__tag-icon:hover {
+    background: #007FAF;
+  }
+  .uniTable .multiselect__tags .multiselect__tags-wrap span.multiselect__tag,
+  .uniTable .multiselect__tags .multiselect__tags-wrap i.multiselect__tag-icon:hover {
+    background: #CA4A38;
+  }
+  .mentorTable .multiselect__tags .multiselect__tags-wrap span.multiselect__tag,
+  .mentorTable .multiselect__tags .multiselect__tags-wrap i.multiselect__tag-icon:hover {
+    background: #F48F00;
+  }
+  .multiselect__option--highlight,
+  .multiselect__option--highlight:after {
+    background: #808080;
+  }
+  .multiselect__tag > .multiselect__tag-icon:after {
+    color: #fff !important;
   }
 </style>
