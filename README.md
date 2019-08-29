@@ -1,16 +1,30 @@
-# triversity
+# triversity-vue-app
 
-## What is this project about?
+> a vue.js project for the trivago university management tool
 
-trivago's University management tool
+## Build Setup
 
-## Dependencies
+``` bash
+# install dependencies
+npm install
 
-This project uses [airtable](https://airtable.com/) as a storage engine.
+# serve with hot reload at localhost:8080
+npm run dev
 
-## Usage
+# build for production with minification
+npm run build
 
-TODO
+# build for production and view the bundle analyzer report
+npm run build --report
 
-## Authors
+# run unit tests
+npm run unit
 
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
