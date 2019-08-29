@@ -46,12 +46,13 @@
           <md-icon v-else class="icon--size-sm color--not-assigned">fiber_manual_record</md-icon>Mentor:
         </small>
         <div class="card__content" v-if="mentorIds">
-          <div v-for="mentor in mentors" :key="mentor.EmpNum">
-            <b-card :title="mentor.Name" :sub-title="mentor.Expertise">
-              <b-card-text>
-                {{mentor.Email}}
-              </b-card-text>
-            </b-card>
+          <div class="card--shadow flex-direction--row" v-for="mentor in mentors" :key="mentor.EmpNum">
+            <div class="card--shadow__content flex--weight-8">
+              <h1 class="card--shadow__title">{{ mentor.Name }}</h1>
+              <span class="card--shadow__description">{{ mentor.Expertise }}</span><br/>
+              <span class="card--shadow__description">{{ mentor.Email }}</span>
+            </div>
+            <div class="card--shadow__image flex--weight-1"><md-icon class="md-size-2x">person</md-icon></div>
           </div>
         </div>
         <p class="card__content" v-else>Not assigned</p>
@@ -62,12 +63,18 @@
           <md-icon v-else class="icon--size-sm color--not-assigned">fiber_manual_record</md-icon>University:
         </small>
         <div class="card__content" v-if="universityIds">
-          <div v-for="university in universities" :key="university.UniCode">
-            <b-card :title="university.Name" :sub-title="university.Address">
-              <b-card-text>
-                {{university.Email}}
-              </b-card-text>
-            </b-card>
+          <div class="card--shadow" v-for="university in universities" :key="university.UniCode">
+            <div class="card--shadow__content card--shadow__content--image-bg" v-if="university.Logo"
+                 :style="{ backgroundImage: 'url(' + university.Logo[0].thumbnails.large.url + ')'}">
+              <h1 class="card--shadow__title">{{ university.Name }}</h1>
+              <span class="card--shadow__description">{{ university.Address }}</span><br/>
+              <span class="card--shadow__description">{{ university.Email }}</span>
+            </div>
+            <div class="card--shadow__content" v-else>
+              <h1 class="card--shadow__title">{{ university.Name }}</h1>
+              <span class="card--shadow__description">{{ university.Address }}</span><br/>
+              <span class="card--shadow__description">{{ university.Email }}</span>
+            </div>
           </div>
         </div>
         <p class="card__content" v-else>Not assigned</p>
@@ -161,9 +168,57 @@ export default {
   }
   .button-group {
     box-sizing: border-box;
-    display: block;
     width: 100%;
     display: flex;
     justify-content: flex-end;
+  }
+  .card--shadow {
+    border-radius: 5px;
+    background-color: #fff;
+    border: 1px solid #f3f3f3;
+    -webkit-box-shadow: 0px 3px 0px 0px rgba(226, 228, 231, 0.75);
+    -moz-box-shadow:    0px 3px 0px 0px rgba(226, 228, 231, 0.75);
+    box-shadow:         0px 3px 0px 0px rgba(226, 228, 231, 0.75);
+    margin: .3em 0;
+  }
+  .card--shadow__image {
+    padding: 10px;
+    color: #fff;
+    border-radius: 0 5px 5px 0;
+    text-align: center;
+    white-space: pre-line;
+    display: flex;
+    justify-content: center;
+  }
+  .card--shadow__content {
+    padding: 10px;
+    color: #747575;
+    white-space: pre-line;
+  }
+  .card--shadow__content--image-bg {
+    background-color: #ffffffcd;
+    padding: 10px;
+    white-space: pre-line;
+    background-size: auto 3em;
+    display: block;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-blend-mode: screen;
+    background-origin: content-box;
+  }
+  .card--shadow__title {
+    font-size: 1.2em;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #444545;
+    white-space: pre-line;
+    padding: 0;
+    margin: 0 0 .3em 0;
+  }
+  .card--shadow__description {
+    font-size: 1em;
+    line-height: .8em;
+    text-align: start;
+    white-space: pre-line;
   }
 </style>

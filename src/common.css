@@ -52,6 +52,7 @@
   border: 1px solid #00000022;
   padding: .3rem .5rem;
   text-align: start;
+  white-space: pre-line;
 }
 .card__content {
   box-sizing: border-box;

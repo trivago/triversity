@@ -23,6 +23,9 @@ export default {
 html {
   height: 100%;
 }
+html.md-theme-default {
+  background-color: #f3f3f3;
+}
 body {
   height: 100%;
   background-color: #f3f3f3

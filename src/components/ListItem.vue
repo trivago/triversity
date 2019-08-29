@@ -79,6 +79,7 @@ export default {
   .list-item__title {
     flex: 8;
     width: 100%;
+    white-space: pre-line;
   }
   .md-18 {
     font-size: 18px !important;
