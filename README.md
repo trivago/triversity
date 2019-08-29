@@ -2,6 +2,21 @@
 
 > a vue.js project for the trivago university management tool
 
+
+## Setup
+
+To run this application you need an airtable token.
+Get the token from here:...
+
+You also need a FileStack account for managing attachments.
+
+Create an `.env` file with the following contents:
+
+```
+AIRTABLE_TOKEN=...
+FILESTACK_TOKEN=...
+```
+
 ## Build Setup
 
 ``` bash
