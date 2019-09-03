@@ -1,25 +1,26 @@
 <template>
   <div id="app">
-    <WebHeader/>
-    <router-view/>
-    <WebFooter/>
+    <WebHeader />
+    <router-view />
+    <WebFooter />
   </div>
 </template>
 
 <script>
-import WebHeader from './components/WebHeader'
-import WebFooter from './components/WebFooter'
+import WebHeader from "./components/WebHeader";
+import WebFooter from "./components/WebFooter";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     WebHeader,
     WebFooter
   }
-}
+};
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css?family=Material+Icons");
 html {
   height: 100%;
 }
@@ -28,11 +29,11 @@ html.md-theme-default {
 }
 body {
   height: 100%;
-  background-color: #f3f3f3
+  background-color: #f3f3f3;
 }
 #app {
   box-sizing: border-box;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
