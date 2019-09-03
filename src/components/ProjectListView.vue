@@ -84,7 +84,7 @@ export default {
   data: function () {
     return {
       apiUrl: 'https://api.airtable.com/v0/',
-      apiKey: process.env.AIRTABLE_API_KEY,
+      apiKey: process.env.VUE_APP_AIRTABLE_API_KEY,
       records: [],
       expandSingle: true,
       isLoading: false,

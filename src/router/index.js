@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ProjectListView from '@/components/ProjectListView'
+import ProjectListView from '../components/ProjectListView'
 import AddProjectPage from '../components/AddProjectPage'
 import ProjectDetailPage from '../components/ProjectDetailPage'
 

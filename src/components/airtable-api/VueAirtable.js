@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 const apiUrl = 'https://api.airtable.com/v0/'
-const base = process.env.AIRTABLE_API_BASE
+const base = process.env.VUE_APP_AIRTABLE_API_BASE
 
 const headers = {
-  'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
+  'Authorization': `Bearer ${process.env.VUE_APP_AIRTABLE_API_KEY}`
 }
 
 export default axios.create({

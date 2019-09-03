@@ -306,7 +306,7 @@ export default {
       }
     },
     callFilestackApi () {
-      const client = require('filestack-js').init('AWAjfQT3YRECutwPS8YCLz')
+      const client = require('filestack-js').init(process.env.VUE_APP_FILESTACK_API_KEY)
       let options = {
         'maxFiles': 5,
         'accept': [
