@@ -3,7 +3,7 @@
 This app is used internally at trivago to manage our collaborations with universities.  
 Managed projects range from bachelor/master theses over workshops and courses to internships.  
 The app was built as part of the [trivago Tech Camp 2019](https://techcamp.trivago.com/) by
-@eajang and @GyuminLee.
+@[eajang](https://github.com/eajang) and @[GyuminLee](https://github.com/GyuminLee).
 
 ## Screenshot
 
