@@ -1,7 +1,8 @@
 ![triversity](./src/assets/logo.png)
 
-This app is used internally at trivago to manage our collaborations with Universities.  
-It was built as part of the [trivago Tech Camp 2019](https://techcamp.trivago.com/) by
+This app is used internally at trivago to manage our collaborations with universities.  
+Managed projects range from bachelor/master theses over workshops and courses to internships.  
+The app was built as part of the [trivago Tech Camp 2019](https://techcamp.trivago.com/) by
 @eajang and @GyuminLee.
 
 ## Screenshot
