@@ -12,7 +12,7 @@
   "dependencies": {
     "@vue/cli": "^3.11.0",
     "@vue/cli-service": "^3.11.0",
-    "airtable": "^0.7.1",
+    "airtable": "^0.7.2",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.28",
